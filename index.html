@@ -1,720 +1,266 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>EverGreen — Подать заявку / Админ</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EverGreen Minecraft - Подать заявку</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg-1:#F0FFF4;          /* светлый фон */
-    --bg-2:#ECFDF5;
-    --lime-500:#10B981;      /* основной лайм */
-    --lime-600:#059669;
-    --lime-200:#D1FAE5;
-    --dark:#0F1724;
-    --muted:#6B7280;
-    --card:#FFFFFF;
-    --danger:#EF4444;
-    --shadow: 0 8px 24px rgba(16,185,129,0.08);
-    --radius:8px;            /* чуть квадратный, но мягкий */
-    --pixel-border:3px;      /* "квадратность" — толстая рамка */
-  }
+:root{
+  --primary:#10B981; --primary-dark:#059669; --primary-light:#D1FAE5;
+  --white:#FFFFFF; --black:#1F2937; --gray-light:#F9FAFB; --gray:#E5E7EB;
+  --gray-dark:#6B7280; --red:#EF4444;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Inter',sans-serif;
+  background:linear-gradient(135deg,#F0FDF4 0%,#ECFDF5 100%);
+  color:var(--black); min-height:100vh; opacity:0; transition:opacity .8s ease-in;
+}
+.container{max-width:1000px;margin:0 auto;padding:20px;position:relative;z-index:1}
+.logo-container{text-align:center;margin:20px 0 40px; position: relative;}
+.logo{width:120px;height:120px;border-radius:12px;border:4px solid var(--primary);
+  box-shadow:0 8px 25px rgba(16,185,129,.3);padding:8px;background-color:var(--white);
+  transition:all .3s ease}
+.logo:hover{transform:scale(1.05);box-shadow:0 12px 35px rgba(16,185,129,.4)}
+/* квадратные фан-блоки */
+.fan-block{position:absolute;width:25px;height:25px;background:var(--primary);border-radius:4px;transform:rotate(15deg);}
+.fan-block.dark{background:var(--primary-dark);transform:rotate(-15deg);}
+.welcome{background-color:var(--white);color:var(--black);padding:40px;border-radius:20px;
+  text-align:center;margin-bottom:30px;box-shadow:0 10px 25px rgba(0,0,0,.08);
+  border:2px solid var(--primary-light);position:relative;overflow:hidden}
+.welcome::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--primary),var(--primary-dark))}
+.welcome h1{font-size:2.2rem;margin-bottom:20px;color:var(--black);font-weight:700;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.welcome p{font-size:1.1rem;line-height:1.7;margin-bottom:30px;color:var(--gray-dark);font-weight:400}
+.btn{display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:var(--white);padding:14px 32px;border:none;border-radius:12px;font-family:'Inter',sans-serif;
+  font-size:1rem;font-weight:600;cursor:pointer;transition:all .3s ease;text-decoration:none;
+  box-shadow:0 4px 15px rgba(16,185,129,.3);gap:8px}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(16,185,129,.4);background:linear-gradient(135deg,var(--primary-dark),#047857)}
+.btn:active{transform:translateY(0);box-shadow:0 4px 15px rgba(16,185,129,.3)}
+.btn-secondary{background:var(--white);color:var(--black);border:2px solid var(--gray);box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.btn-secondary:hover{background:var(--gray-light);border-color:var(--gray-dark);box-shadow:0 4px 15px rgba(0,0,0,.1)}
+.btn-danger{background:linear-gradient(135deg,var(--red),#DC2626);box-shadow:0 4px 15px rgba(239,68,68,.3)}
+.btn-danger:hover{background:linear-gradient(135deg,#DC2626,#B91C1C);box-shadow:0 8px 25px rgba(239,68,68,.4)}
 
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;
-    font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-    background: linear-gradient(135deg,var(--bg-1) 0%, var(--bg-2) 100%);
-    color:var(--dark);
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    padding:20px;
-  }
+.form-container{display:none;background-color:var(--white);color:var(--black);
+  padding:40px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,.08);border:2px solid var(--primary-light);
+  margin-bottom:30px;position:relative;overflow:hidden}
+.form-container::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--primary),var(--primary-dark))}
+.form-step{display:none;animation:fadeIn .5s ease-in-out}
+.form-step.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.form-step h2{font-size:1.5rem;margin-bottom:30px;color:var(--black);text-align:center;font-weight:600}
+.form-group{margin-bottom:25px;word-break:break-word}
+.form-group label{display:block;margin-bottom:10px;font-size:.95rem;font-weight:500;color:var(--black)}
+.form-group input{width:100%;padding:14px 16px;border:2px solid var(--gray);border-radius:12px;
+  font-family:'Inter',sans-serif;font-size:1rem;background-color:var(--white);transition:all .3s ease}
+.form-group input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(16,185,129,.1);background-color:var(--white)}
+.form-navigation{display:flex;justify-content:space-between;align-items:center;margin-top:40px;gap:15px}
+.form-navigation .btn{min-width:120px}
+.progress-container{margin:30px 0 40px}
+.progress-bar{height:8px;background-color:var(--gray);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.progress{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary-dark));width:0%;transition:width .5s ease-in-out;border-radius:10px}
+.progress-steps{display:flex;justify-content:space-between;margin-top:15px;flex-wrap:wrap}
+.progress-step{font-size:.85rem;color:var(--gray-dark);font-weight:500;text-align:center;flex:1;position:relative;min-width:60px;word-break:break-word}
+.progress-step::before{content:'';position:absolute;top:-25px;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;
+  background:var(--gray);border:3px solid var(--white);z-index:2;transition:all .3s ease}
+.progress-step.active::before{background:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
+.progress-step.active{color:var(--primary);font-weight:600}
 
-  .container{max-width:1100px;margin:0 auto}
+.success-message{display:none;background-color:var(--white);color:var(--black);padding:50px 40px;border-radius:20px;text-align:center;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);border:2px solid var(--primary-light);margin-bottom:30px;position:relative;overflow:hidden;word-break:break-word}
+.success-message::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--primary-dark))}
+.success-message h2{font-size:1.8rem;margin-bottom:20px;color:var(--black);font-weight:700}
+.success-message p{font-size:1.1rem;line-height:1.7;margin-bottom:30px;color:var(--gray-dark)}
 
-  /* HEADER / LOGO */
-  .top {
-    display:flex;align-items:center;gap:16px;margin-bottom:18px;
-    justify-content:space-between;
-  }
-  .brand {
-    display:flex;gap:14px;align-items:center;
-  }
-  .logo {
-    width:64px;height:64px;border-radius:8px;border:var(--pixel-border) solid var(--lime-500);
-    background:linear-gradient(180deg,var(--card),#F7FFF8);display:flex;align-items:center;justify-content:center;
-    box-shadow:var(--shadow);
-  }
-  .logo img{width:48px;height:48px;display:block;object-fit:cover;border-radius:6px}
-  .brand h1{font-size:18px;margin:0;font-weight:700;letter-spacing:0.2px}
-  .brand p{margin:0;font-size:12px;color:var(--muted)}
+.application-data{background-color:var(--gray-light);padding:25px;border-radius:12px;margin:25px 0;text-align:left;font-size:.95rem;border-left:4px solid var(--primary);word-break:break-word}
+.application-data h3{text-align:center;margin-bottom:15px;color:var(--black);font-weight:600}
+.application-data p{margin:8px 0;color:var(--gray-dark)}
+.application-data strong{color:var(--black);font-weight:600}
 
-  .top-actions{display:flex;gap:10px;align-items:center}
-  .btn {
-    background:linear-gradient(180deg,var(--lime-500),var(--lime-600));
-    color:white;padding:10px 14px;border-radius:8px;border:none;cursor:pointer;font-weight:600;
-    box-shadow:0 6px 18px rgba(5,150,105,0.14);
-    display:inline-flex;gap:8px;align-items:center;font-size:14px;
-  }
-  .btn.secondary{
-    background:var(--card);color:var(--dark);border:2px solid var(--lime-200);box-shadow:none;
-  }
-  .btn.danger{
-    background:linear-gradient(180deg,var(--danger),#C02424);box-shadow:0 6px 18px rgba(239,68,68,0.12)
-  }
+/* Админ-панель */
+.admin-container{display:none;background-color:var(--white);padding:30px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,.08);
+  border:2px solid var(--primary-light);margin-bottom:30px;position:relative;overflow:hidden}
+.admin-container::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--primary-dark))}
+.admin-container h2{font-size:1.8rem;margin-bottom:25px;color:var(--black);font-weight:700;text-align:center}
+.admin-table-container{overflow-x:auto;margin:25px 0;border-radius:12px;border:1px solid var(--gray)}
+.admin-table{width:100%;border-collapse:collapse;min-width:600px;background:var(--white);table-layout:fixed;word-wrap:break-word}
+.admin-table th{background:linear-gradient(135deg,var(--primary-light),#A7F3D0);color:var(--black);font-weight:600;padding:16px 12px;text-align:left;border-bottom:2px solid var(--primary);font-size:.9rem}
+.admin-table td{padding:14px 12px;border-bottom:1px solid var(--gray);font-size:.9rem;color:var(--black);overflow-wrap:break-word}
+.admin-table tbody tr{transition:background-color .2s ease}
+.admin-table tbody tr:hover{background-color:var(--primary-light)}
+.admin-table tbody tr:last-child td{border-bottom:none}
+.admin-actions{display:flex;justify-content:center;gap:15px;margin-top:25px;flex-wrap:wrap}
+.no-applications{text-align:center;padding:40px;color:var(--gray-dark);font-size:1.1rem}
+.youtube-link{color:var(--primary);text-decoration:none;font-weight:500;transition:color .2s ease}
+.youtube-link:hover{color:var(--primary-dark);text-decoration:underline}
 
-  /* WELCOME CARD */
-  .welcome {
-    background:var(--card);padding:22px;border-radius:var(--radius);
-    border:var(--pixel-border) solid var(--lime-200);box-shadow:var(--shadow);display:flex;gap:20px;align-items:center;
-    margin-bottom:18px;
-  }
-  .welcome .left{flex:0 0 90px}
-  .welcome h2{margin:0;font-size:20px}
-  .welcome p{margin:6px 0 0;color:var(--muted)}
-
-  /* FORM CARD */
-  .card {
-    background:var(--card);padding:20px;border-radius:var(--radius);
-    border:var(--pixel-border) solid var(--lime-200);box-shadow:var(--shadow);margin-bottom:18px;
-  }
-
-  .progress-row{display:flex;align-items:center;gap:16px;margin-bottom:14px}
-  .progress-bar{flex:1;height:10px;background:#F1F6F2;border-radius:999px;overflow:hidden;border:1px solid rgba(0,0,0,0.03)}
-  .progress .bar-inner{height:100%;width:0;background:linear-gradient(90deg,var(--lime-500),var(--lime-600));transition:width .4s ease}
-  .steps{display:flex;gap:8px;font-size:12px;color:var(--muted)}
-  .steps .active{color:var(--lime-600);font-weight:700}
-
-  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .form-row .full{grid-column:1/-1}
-  label{display:block;font-size:13px;margin-bottom:8px;color:var(--dark);font-weight:600}
-  input[type="text"],input[type="number"],input[type="url"]{
-    width:100%;padding:10px 12px;border-radius:6px;border:2px solid var(--lime-200);font-size:14px;
-    background:transparent;
-  }
-  input:focus{outline:none;border-color:var(--lime-500);box-shadow:0 6px 18px rgba(16,185,129,0.06)}
-
-  .nav-buttons{display:flex;gap:10px;justify-content:space-between;margin-top:14px}
-  .nav-buttons .left{display:flex;gap:10px}
-
-  /* SUCCESS */
-  .success {text-align:center}
-
-  /* ADMIN PANEL */
-  .admin-wrap {
-    display:block;
-  }
-  .admin-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
-  .admin-grid {
-    display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
-  }
-
-  /* карточка заявки */
-  .app-card{
-    background:linear-gradient(180deg,var(--card),#FBFFFB);padding:12px;border-radius:8px;
-    border:2px solid rgba(0,0,0,0.03);box-shadow:0 6px 16px rgba(11,22,16,0.04);
-    display:flex;flex-direction:column;gap:8px;
-  }
-  .app-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
-  .app-id{
-    background:linear-gradient(180deg,var(--lime-200),#E6FCEC);padding:6px 8px;border-radius:6px;font-weight:700;font-size:13px;
-    border:2px solid var(--lime-500;color:var(--lime-600));
-  }
-  .app-meta{font-size:13px;color:var(--muted);word-break:break-word}
-  .app-link{color:var(--lime-600);text-decoration:none;font-weight:600}
-  .app-actions{display:flex;gap:8px;margin-top:8px}
-
-  /* TABLE view for larger screens */
-  .admin-table-wrap{overflow:auto;border-radius:8px;border:2px solid var(--lime-200);background:var(--card)}
-  table.admin-table{width:100%;border-collapse:collapse;min-width:760px}
-  table.admin-table th, table.admin-table td{padding:12px 10px;text-align:left;border-bottom:1px solid rgba(0,0,0,0.04)}
-  table.admin-table th{font-size:13px;background:linear-gradient(180deg,var(--lime-200),#E6FCEC);font-weight:700}
-  .td-actions{display:flex;gap:8px;justify-content:center}
-  .small-muted{font-size:12px;color:var(--muted)}
-
-  /* mobile adjustments */
-  @media (max-width:1000px){
-    .admin-grid{grid-template-columns:repeat(2,1fr)}
-    .form-row{grid-template-columns:1fr}
-  }
-  @media (max-width:720px){
-    .admin-grid{grid-template-columns:1fr}
-    .top{flex-direction:column;align-items:flex-start;gap:10px}
-    .form-row{grid-template-columns:1fr}
-    .admin-table-wrap{display:none} /* hide table on small screens */
-  }
-  @media (min-width:721px){
-    .app-card { display:none } /* show table on desktop, cards hidden on desktop unless needed */
-    .admin-table-wrap{display:block}
-  }
-
-  /* pixel / square accents (minecraft vibe) */
-  .pixel {
-    box-shadow: 0 0 0 3px rgba(0,0,0,0.02) inset;
-    border-radius:4px;
-    border:2px solid rgba(0,0,0,0.02);
-  }
-
-  /* utility */
-  .muted{color:var(--muted)}
-  .center{display:flex;align-items:center;justify-content:center}
-  a {color:inherit}
+@media (max-width:768px){
+  .container{padding:15px}
+  .welcome,.form-container,.success-message,.admin-container{padding:30px 25px}
+  .welcome h1{font-size:1.8rem}
+  .welcome p,.success-message p{font-size:1rem}
+  .btn{padding:12px 24px;font-size:.95rem}
+  .form-step h2{font-size:1.3rem}
+  .progress-step{font-size:.75rem;min-width:50px}
+  .form-navigation{flex-direction:column}
+  .form-navigation .btn{width:100%}
+  .admin-table th,.admin-table td{padding:12px 8px;font-size:.8rem}
+}
+@media (max-width:480px){
+  .logo{width:100px;height:100px}
+  .welcome,.form-container,.success-message{padding:25px 20px}
+  .welcome h1{font-size:1.5rem}
+  .form-step h2{font-size:1.2rem}
+  .progress-step{font-size:.7rem;min-width:45px}
+  .admin-container h2{font-size:1.5rem}
+}
 </style>
 </head>
 <body>
-  <div class="container">
-    <div class="top">
-      <div class="brand">
-        <div class="logo pixel" aria-hidden="true">
-          <img src="https://i.ibb.co/TqYqtF1h/logo.png" alt="EverGreen logo">
-        </div>
-        <div>
-          <h1>EverGreen — заявка на подключение</h1>
-          <p>Приватный Minecraft сервер • Админ-панель / Подать заявку</p>
-        </div>
-      </div>
+<div class="container" id="mainContent">
+  <div class="logo-container">
+    <img src="https://i.ibb.co/TqYqtF1h/logo.png" class="logo" alt="EverGreen">
+    <div class="fan-block" style="top:-10px;left:-10px;"></div>
+    <div class="fan-block dark" style="bottom:-10px;right:-10px;"></div>
+  </div>
+  <div class="welcome">
+    <h1>EverGreen Minecraft</h1>
+    <p>Добро пожаловать! Подайте заявку, чтобы присоединиться к нашей команде. Всё просто и удобно, а заявки сохраняются прямо в браузере.</p>
+    <button class="btn" id="startForm">Подать заявку</button>
+    <button class="btn btn-secondary" id="adminPanelBtn">Админ-панель</button>
+  </div>
 
-      <div class="top-actions">
-        <button class="btn" id="viewWelcomeBtn">Пользователь</button>
-        <button class="btn secondary" id="openAdminBtn" title="Открыть админку (добавить ?admin в URL)">Админ (local)</button>
+  <div class="form-container" id="applicationForm">
+    <div class="form-step active" data-step="1">
+      <h2>Информация о вас</h2>
+      <div class="form-group">
+        <label>Ваш ник в Discord</label>
+        <input type="text" id="discord" placeholder="Например: user">
       </div>
-    </div>
-
-    <!-- WELCOME -->
-    <div class="welcome card" id="welcomeCard">
-      <div class="left">
-        <div style="width:72px;height:72px;border-radius:6px;background:linear-gradient(180deg,var(--lime-500),var(--lime-600));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:20px">
-          EG
-        </div>
+      <div class="form-group">
+        <label>Возраст</label>
+        <input type="number" id="age" placeholder="Например: 16">
       </div>
-      <div style="flex:1">
-        <h2 id="welcomeTitle">Добро пожаловать на EverGreen!</h2>
-        <p id="welcomeDesc">Присоединяйся к приватному серверу — оставь заявку, и мы добавим тебя в команду.</p>
-      </div>
-      <div>
-        <button class="btn" id="startBtn">Подать заявку</button>
+      <div class="form-navigation">
+        <button class="btn" id="next1">Далее</button>
       </div>
     </div>
-
-    <!-- FORM -->
-    <div class="card" id="formCard" style="display:none">
-      <div class="progress-row">
-        <div style="width:170px" class="steps" id="stepLabels">
-          <span class="active">Никнейм</span> › <span>Возраст</span> › <span>YouTube</span> › <span>Твой дискорд</span>
-        </div>
-        <div class="progress-bar" style="flex:1">
-          <div class="bar-inner" id="progressInner" style="width:0%"></div>
-        </div>
+    <div class="form-step" data-step="2">
+      <h2>Дополнительно</h2>
+      <div class="form-group">
+        <label>Почему хотите присоединиться?</label>
+        <input type="text" id="reason" placeholder="Короткий ответ">
       </div>
-
-      <form id="applicationForm" novalidate>
-        <div id="step1" class="step" data-step="1">
-          <div class="form-row">
-            <div>
-              <label for="minecraftNick">Введите ваш никнейм</label>
-              <input id="minecraftNick" type="text" placeholder="Например: Steve42" minlength="3" required>
-            </div>
-            <div>
-              <!-- пустой столбец чтобы ровнее смотрелось -->
-            </div>
-            <div class="full" style="margin-top:8px">
-              <div class="nav-buttons">
-                <div></div>
-                <div><button type="button" class="btn" id="next1">Далее →</button></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div id="step2" class="step" data-step="2" style="display:none">
-          <div class="form-row">
-            <div>
-              <label for="age">Сколько вам лет?</label>
-              <input id="age" type="number" min="10" max="100" placeholder="От 10 до 100" required>
-            </div>
-            <div></div>
-            <div class="full" style="margin-top:8px">
-              <div class="nav-buttons">
-                <div class="left">
-                  <button type="button" class="btn secondary" id="prev2">← Назад</button>
-                </div>
-                <div><button type="button" class="btn" id="next2">Далее →</button></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div id="step3" class="step" data-step="3" style="display:none">
-          <div class="form-row">
-            <div class="full">
-              <label for="youtubeLink">Ссылка на YouTube-видео</label>
-              <input id="youtubeLink" type="url" placeholder="https://www.youtube.com/watch?v=..." required>
-            </div>
-            <div class="full" style="margin-top:8px">
-              <div class="nav-buttons">
-                <div class="left">
-                  <button type="button" class="btn secondary" id="prev3">← Назад</button>
-                </div>
-                <div><button type="button" class="btn" id="next3">Далее →</button></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div id="step4" class="step" data-step="4" style="display:none">
-          <div class="form-row">
-            <div class="full">
-              <label for="discordNick">Твой дискорд (пример: <span class="muted">user</span>)</label>
-              <input id="discordNick" type="text" placeholder="Например: Notch" required minlength="3">
-            </div>
-            <div class="full" style="margin-top:8px">
-              <div class="nav-buttons">
-                <div class="left">
-                  <button type="button" class="btn secondary" id="prev4">← Назад</button>
-                </div>
-                <div><button type="submit" class="btn" id="submitBtn">Отправить заявку</button></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
-
-    <!-- SUCCESS -->
-    <div class="card" id="successCard" style="display:none">
-      <div class="success">
-        <h3>Заявка отправлена — спасибо!</h3>
-        <p class="small-muted">Мы свяжемся с тобой в Discord. Ниже — копия заявки.</p>
-        <div id="applicationData" style="margin:12px 0;padding:12px;border-radius:6px;border:2px solid var(--lime-200;background:#FAFFFB"></div>
-        <div style="margin-top:10px;display:flex;gap:8px;justify-content:center">
-          <button class="btn" id="newAppBtn">Подать новую</button>
-          <button class="btn secondary" id="viewAdminBtn">Перейти в админку</button>
-        </div>
+      <div class="form-navigation">
+        <button class="btn btn-secondary" id="prev2">Назад</button>
+        <button class="btn" id="submitForm">Отправить</button>
       </div>
-    </div>
-
-    <!-- ADMIN -->
-    <div id="adminPanel" style="display:none" class="card admin-wrap">
-      <div class="admin-header">
-        <div>
-          <h3 style="margin:0">Админ-панель — EverGreen</h3>
-          <p class="small-muted" style="margin:4px 0 0">Удобный просмотр заявок. Палитра — лаймовая. Стиль — Minecraft-inspired.</p>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <button class="btn danger" id="clearAppsBtn">Очистить все</button>
-          <button class="btn secondary" id="refreshAppsBtn">Обновить</button>
-          <button class="btn" id="closeAdminBtn">Закрыть</button>
-        </div>
-      </div>
-
-      <!-- TABLE for larger screens -->
-      <div class="admin-table-wrap" id="adminTableWrap">
-        <table class="admin-table" id="adminTable" role="table" aria-label="Заявки">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Никнейм</th>
-              <th>Возраст</th>
-              <th>YouTube</th>
-              <th>Discord</th>
-              <th>Дата</th>
-              <th style="text-align:center">Действия</th>
-            </tr>
-          </thead>
-          <tbody id="adminTbody"></tbody>
-        </table>
-      </div>
-
-      <!-- CARD list for small screens -->
-      <div class="admin-grid" id="adminCards" style="margin-top:12px;display:none"></div>
     </div>
   </div>
 
+  <div class="success-message" id="successMessage">
+    <h2>Спасибо за заявку!</h2>
+    <p>Ваша заявка успешно отправлена. ID вашей заявки:</p>
+    <p id="successID" style="font-weight:700;font-size:1.2rem;color:var(--primary)"></p>
+  </div>
+
+  <div class="admin-container" id="adminContainer">
+    <h2>Админ-панель</h2>
+    <div class="admin-table-container">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Discord</th>
+            <th>Возраст</th>
+            <th>Причина</th>
+          </tr>
+        </thead>
+        <tbody id="applicationsTable">
+          <tr class="no-applications"><td colspan="4">Заявок пока нет</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <script>
-/* CONFIG */
-const CONFIG = {
-  ADMIN_PASSWORD: "EverGreenAdmin123",
-  SERVER_NAME: "EverGreen"
-};
+// Плавная загрузка
+document.body.style.opacity = '1';
 
-/* UTIL — безопасный localStorage */
-function safeGetApps(){
-  try {
-    const raw = localStorage.getItem('evergreenApplications') || '[]';
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed;
-  } catch(e){
-    console.error('localStorage read error', e);
-    return [];
-  }
-}
-function safeSetApps(arr){
-  try {
-    localStorage.setItem('evergreenApplications', JSON.stringify(arr));
-  } catch(e){
-    console.error('localStorage write error', e);
-  }
-}
+// Навигация между шагами
+const startBtn = document.getElementById('startForm');
+const form = document.getElementById('applicationForm');
+const success = document.getElementById('successMessage');
+const adminBtn = document.getElementById('adminPanelBtn');
+const adminContainer = document.getElementById('adminContainer');
 
-/* ID generator: 6 символов A-Z0-9 */
-function generateId(){
-  const CHARS = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // убрать похожие символы
-  const maxAttempts = 8;
-  for (let attempt=0; attempt<maxAttempts; attempt++){
-    let id = '';
-    for (let i=0;i<6;i++) id += CHARS[Math.floor(Math.random()*CHARS.length)];
-    // уникальность
-    const apps = safeGetApps();
-    if (!apps.some(a => a.id === id)) return id;
-  }
-  // fallback
-  return Date.now().toString(36).slice(-6).toUpperCase();
-}
+startBtn.addEventListener('click',()=>{form.style.display='block';window.scrollTo({top:form.offsetTop,behavior:'smooth'})});
+adminBtn.addEventListener('click',()=>{adminContainer.style.display=adminContainer.style.display==='block'?'none':'block';window.scrollTo({top:adminContainer.offsetTop,behavior:'smooth'})});
 
-/* Escaping for safe insertion */
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const next1 = document.getElementById('next1');
+const prev2 = document.getElementById('prev2');
+const step1 = document.querySelector('.form-step[data-step="1"]');
+const step2 = document.querySelector('.form-step[data-step="2"]');
+next1.addEventListener('click',()=>{
+  const discord = document.getElementById('discord').value.trim();
+  const age = document.getElementById('age').value.trim();
+  if(discord===''||age===''){alert('Заполните все поля');return;}
+  step1.classList.remove('active');
+  step2.classList.add('active');
+});
+prev2.addEventListener('click',()=>{
+  step2.classList.remove('active');
+  step1.classList.add('active');
+});
+
+// Генерация короткого ID (6 символов)
+function generateID(){return Math.random().toString(36).substring(2,8).toUpperCase();}
+
+// Сохранение заявок
+const applicationsTable = document.getElementById('applicationsTable');
+function saveApplication(data){
+  let apps = JSON.parse(localStorage.getItem('applications')||'[]');
+  apps.push(data);
+  localStorage.setItem('applications',JSON.stringify(apps));
+  renderAdmin();
 }
 
-/* View helpers */
-const $ = id => document.getElementById(id);
-
-/* UI elements */
-const welcomeCard = $('welcomeCard');
-const formCard = $('formCard');
-const successCard = $('successCard');
-const startBtn = $('startBtn');
-const newAppBtn = $('newAppBtn');
-const viewAdminBtn = $('viewAdminBtn');
-const adminPanel = $('adminPanel');
-const adminTableWrap = $('adminTableWrap');
-const adminTbody = $('adminTbody');
-const adminCards = $('adminCards');
-const clearAppsBtn = $('clearAppsBtn');
-const refreshAppsBtn = $('refreshAppsBtn');
-const closeAdminBtn = $('closeAdminBtn');
-
-const openAdminBtn = $('openAdminBtn');
-const viewWelcomeBtn = $('viewWelcomeBtn');
-
-/* Form steps */
-const steps = Array.from(document.querySelectorAll('.step'));
-const stepLabels = Array.from(document.querySelectorAll('#stepLabels span'));
-const progressInner = $('progressInner');
-
-let currentStep = 1;
-function showStep(n){
-  steps.forEach((s, idx)=> {
-    s.style.display = (idx === n-1) ? '' : 'none';
-  });
-  // labels
-  stepLabels.forEach((el, i) => el.classList.toggle('active', i <= n-1));
-  // progress percent
-  const pct = Math.round(((n-1)/(steps.length-1))*100);
-  progressInner.style.width = pct + '%';
-  currentStep = n;
-  // focus first input
-  const input = steps[n-1].querySelector('input');
-  if (input) input.focus();
-}
-
-/* Basic validation per step */
-function validateStep(idx){
-  if (idx === 0){
-    const v = $('minecraftNick').value.trim();
-    if (!v || v.length < 3) return {valid:false, msg:'Никнейм должен содержать минимум 3 символа'};
-    return {valid:true};
-  }
-  if (idx === 1){
-    const v = parseInt($('age').value,10);
-    if (isNaN(v) || v < 10 || v > 100) return {valid:false, msg:'Введите корректный возраст (10–100)'};
-    return {valid:true};
-  }
-  if (idx === 2){
-    const v = $('youtubeLink').value.trim();
-    if (!v) return {valid:false, msg:'Введите ссылку на YouTube'};
-    try {
-      const u = new URL(v);
-      if (!/youtube\.com|youtu\.be/i.test(u.hostname)) return {valid:false, msg:'Ссылка должна вести на youtube.com или youtu.be'};
-    } catch(e){
-      return {valid:false, msg:'Неверный формат ссылки'};
-    }
-    return {valid:true};
-  }
-  return {valid:true};
-}
-
-/* Step navigation */
-$('next1').addEventListener('click', ()=> {
-  const ok = validateStep(0);
-  if (!ok.valid) return alert(ok.msg);
-  showStep(2);
-});
-$('next2').addEventListener('click', ()=> {
-  const ok = validateStep(1);
-  if (!ok.valid) return alert(ok.msg);
-  showStep(3);
-});
-$('next3').addEventListener('click', ()=> {
-  const ok = validateStep(2);
-  if (!ok.valid) return alert(ok.msg);
-  showStep(4);
-});
-$('prev2').addEventListener('click', ()=> showStep(1));
-$('prev3').addEventListener('click', ()=> showStep(2));
-$('prev4').addEventListener('click', ()=> showStep(3));
-
-/* Start / show form */
-startBtn.addEventListener('click', ()=> {
-  welcomeCard.style.display = 'none';
-  formCard.style.display = '';
-  showStep(1);
+// Отправка формы
+const submitForm = document.getElementById('submitForm');
+submitForm.addEventListener('click',()=>{
+  const discord = document.getElementById('discord').value.trim();
+  const age = document.getElementById('age').value.trim();
+  const reason = document.getElementById('reason').value.trim();
+  if(discord===''||age===''||reason===''){alert('Заполните все поля');return;}
+  const appID = generateID();
+  saveApplication({id:appID,discord,age,reason});
+  form.style.display='none';
+  success.style.display='block';
+  document.getElementById('successID').textContent=appID;
 });
 
-/* New application */
-newAppBtn.addEventListener('click', ()=> {
-  document.getElementById('applicationForm').reset();
-  successCard.style.display = 'none';
-  formCard.style.display = '';
-  showStep(1);
-});
-
-/* View admin button (in success screen) */
-viewAdminBtn.addEventListener('click', ()=> {
-  showAdminFlow();
-});
-
-/* Admin open (top) — opens page param ?admin for consistency */
-openAdminBtn.addEventListener('click', ()=> {
-  // redirect to same path with ?admin
-  const url = new URL(location.href);
-  url.searchParams.set('admin','1');
-  location.href = url.toString();
-});
-
-/* top 'Пользователь' button: go to welcome */
-viewWelcomeBtn.addEventListener('click', ()=> {
-  // remove admin param if existed
-  const url = new URL(location.href);
-  url.searchParams.delete('admin');
-  history.replaceState({}, '', url.toString());
-  adminPanel.style.display = 'none';
-  $('formCard').style.display = 'none';
-  $('welcomeCard').style.display = '';
-  $('successCard').style.display = 'none';
-});
-
-/* ADMIN FLOW: check url param admin on load */
-function isAdminMode(){
-  const p = new URL(location.href).searchParams;
-  return p.has('admin');
-}
-
-function showAdminFlow(){
-  // ask for password
-  const pwd = prompt('Введите пароль администратора:');
-  if (pwd !== CONFIG.ADMIN_PASSWORD){
-    alert('Неверный пароль!');
+// Рендер админ-панели
+function renderAdmin(){
+  let apps = JSON.parse(localStorage.getItem('applications')||'[]');
+  if(apps.length===0){
+    applicationsTable.innerHTML='<tr class="no-applications"><td colspan="4">Заявок пока нет</td></tr>';
     return;
   }
-  // show admin panel
-  $('welcomeCard').style.display = 'none';
-  $('formCard').style.display = 'none';
-  $('successCard').style.display = 'none';
-  adminPanel.style.display = '';
-  // render
-  renderAdmin();
-}
-
-/* Close admin */
-closeAdminBtn.addEventListener('click', ()=> {
-  adminPanel.style.display = 'none';
-  // remove admin param from URL
-  const url = new URL(location.href);
-  url.searchParams.delete('admin');
-  history.replaceState({}, '', url.toString());
-  $('welcomeCard').style.display = '';
-});
-
-/* Render admin (table + cards) */
-function renderAdmin(){
-  const apps = safeGetApps();
-  // table
-  adminTbody.innerHTML = '';
-  if (apps.length === 0){
-    adminTbody.innerHTML = '<tr><td colspan="7" class="small-muted" style="padding:18px">Нет заявок</td></tr>';
-  } else {
-    for (let i=apps.length-1;i>=0;i--){ // newest first
-      const a = apps[i];
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td style="font-weight:700">${escapeHtml(a.id)}</td>
-        <td>${escapeHtml(a.minecraftNick)}</td>
-        <td>${escapeHtml(a.age)}</td>
-        <td><a class="app-link" href="${escapeHtml(a.youtubeLink)}" target="_blank" rel="noopener noreferrer">Смотреть</a></td>
-        <td>${escapeHtml(a.discordNick)}</td>
-        <td class="small-muted">${escapeHtml(a.timestamp)}</td>
-        <td class="td-actions">
-          <button class="btn secondary" data-id="${escapeHtml(a.id)}" aria-label="Удалить заявку ${escapeHtml(a.id)}">Удалить</button>
-        </td>
-      `;
-      adminTbody.appendChild(tr);
-    }
-  }
-
-  // attach delete handlers for table buttons
-  adminTbody.querySelectorAll('button[data-id]').forEach(btn=>{
-    btn.addEventListener('click', (e)=>{
-      const id = btn.getAttribute('data-id');
-      if (!confirm('Удалить заявку ' + id + ' ?')) return;
-      deleteApplicationById(id);
-      renderAdmin();
-    });
+  applicationsTable.innerHTML='';
+  apps.forEach(a=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML=`<td>${a.id}</td><td>${a.discord}</td><td>${a.age}</td><td>${a.reason}</td>`;
+    applicationsTable.appendChild(tr);
   });
-
-  // mobile cards (display on small screens)
-  // we always fill container, but CSS shows/hides appropriately
-  adminCards.innerHTML = '';
-  if (apps.length === 0){
-    adminCards.innerHTML = '<div class="small-muted">Нет заявок</div>';
-  } else {
-    for (let i=apps.length-1;i>=0;i--){
-      const a = apps[i];
-      const card = document.createElement('div');
-      card.className = 'app-card pixel';
-      card.innerHTML = `
-        <div class="app-top">
-          <div style="display:flex;flex-direction:column;gap:6px">
-            <div style="display:flex;gap:8px;align-items:center">
-              <div class="app-id">${escapeHtml(a.id)}</div>
-              <div style="font-weight:700">${escapeHtml(a.minecraftNick)}</div>
-            </div>
-            <div class="app-meta small-muted">${escapeHtml(a.timestamp)}</div>
-          </div>
-          <div style="text-align:right">
-            <div class="small-muted">Возраст</div>
-            <div style="font-weight:700">${escapeHtml(a.age)}</div>
-          </div>
-        </div>
-        <div style="font-size:13px;overflow-wrap:anywhere;margin-top:8px">
-          <div><strong>YouTube:</strong> <a class="app-link" href="${escapeHtml(a.youtubeLink)}" target="_blank" rel="noopener noreferrer">${escapeHtml(a.youtubeLink)}</a></div>
-          <div style="margin-top:6px"><strong>Discord:</strong> ${escapeHtml(a.discordNick)}</div>
-        </div>
-        <div class="app-actions">
-          <button class="btn secondary" data-id="${escapeHtml(a.id)}">Удалить</button>
-        </div>
-      `;
-      adminCards.appendChild(card);
-    }
-
-    // delete handlers on mobile
-    adminCards.querySelectorAll('button[data-id]').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        const id = btn.getAttribute('data-id');
-        if (!confirm('Удалить заявку ' + id + ' ?')) return;
-        deleteApplicationById(id);
-        renderAdmin();
-      });
-    });
-  }
-
-  // show/hide table/cards based on screen width handled in CSS
 }
-
-/* delete by id */
-function deleteApplicationById(id){
-  let apps = safeGetApps();
-  apps = apps.filter(a => a.id !== id);
-  safeSetApps(apps);
-}
-
-/* clear all */
-clearAppsBtn.addEventListener('click', ()=>{
-  if (!confirm('Точно удалить все заявки? Это действие нельзя отменить.')) return;
-  safeSetApps([]);
-  renderAdmin();
-  alert('Все заявки удалены');
-});
-refreshAppsBtn.addEventListener('click', renderAdmin);
-
-/* Form submit */
-document.getElementById('applicationForm').addEventListener('submit', function(e){
-  e.preventDefault();
-
-  // discord validation: modern format — just username (no #), min 3 chars
-  const discord = $('discordNick').value.trim();
-  if (!discord || discord.length < 3) { alert('Введите корректный Discord (пример: user)'); return; }
-  // final validate previous steps
-  for (let i=0;i<3;i++){
-    const v = validateStep(i);
-    if (!v.valid){ alert(v.msg); showStep(i+1); return; }
-  }
-  // create application
-  const app = {
-    id: generateId(),
-    minecraftNick: $('minecraftNick').value.trim(),
-    age: $('age').value.trim(),
-    youtubeLink: $('youtubeLink').value.trim(),
-    discordNick: discord,
-    timestamp: new Date().toLocaleString('ru-RU')
-  };
-  const apps = safeGetApps();
-  apps.push(app);
-  safeSetApps(apps);
-
-  // show success
-  formCard.style.display = 'none';
-  successCard.style.display = '';
-  $('applicationData').innerHTML = `
-    <div style="display:flex;gap:10px;align-items:center;justify-content:center;margin-bottom:8px">
-      <div style="font-weight:800;padding:8px 10px;border-radius:6px;background:linear-gradient(180deg,var(--lime-200),#E6FCEC)">ID ${escapeHtml(app.id)}</div>
-      <div style="font-weight:700">${escapeHtml(app.minecraftNick)}</div>
-    </div>
-    <div style="text-align:left">
-      <div><strong>Возраст:</strong> ${escapeHtml(app.age)}</div>
-      <div style="margin-top:6px"><strong>YouTube:</strong> <a href="${escapeHtml(app.youtubeLink)}" target="_blank" rel="noopener noreferrer">${escapeHtml(app.youtubeLink)}</a></div>
-      <div style="margin-top:6px"><strong>Discord:</strong> ${escapeHtml(app.discordNick)}</div>
-      <div style="margin-top:8px" class="small-muted"><strong>Дата:</strong> ${escapeHtml(app.timestamp)}</div>
-    </div>
-  `;
-
-  // prepare admin if currently open
-  if (adminPanel.style.display !== 'none') renderAdmin();
-});
-
-/* Auto-open admin if ?admin in URL on load (ask password) */
-window.addEventListener('load', ()=>{
-  if (isAdminMode()){
-    // small delay to allow UI paint
-    setTimeout(()=> showAdminFlow(), 120);
-  }
-});
-
-/* If admin panel visible on mobile, show cards; else hide cards - CSS handles visibility */
-/* Also make admin cards container visible by JS on small screens for better UX */
-function handleResize(){
-  // show adminCards container only on small widths
-  if (window.innerWidth <= 720){
-    // make admin-cards visible (table is hidden via CSS)
-    adminCards.style.display = '';
-  } else {
-    adminCards.style.display = 'none';
-  }
-}
-window.addEventListener('resize', handleResize);
-handleResize();
-
-/* Accessibility: allow Enter on top open admin (shortcut) */
-document.addEventListener('keydown', (e)=>{
-  if (e.key === 'a' && (e.ctrlKey || e.metaKey)){ // Ctrl/Cmd + A opens admin prompt (convenience)
-    showAdminFlow();
-  }
-});
-
+renderAdmin();
 </script>
 </body>
 </html>
