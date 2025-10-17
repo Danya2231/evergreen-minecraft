@@ -135,12 +135,10 @@ body{font-family:'Press Start 2P',cursive;background-color:var(--light-green);co
 </div>
 
 <script>
-// Fade-in
 document.addEventListener('DOMContentLoaded',()=>{document.body.style.opacity='1';});
 
-// Проверка на админ-доступ
 const urlParams = new URLSearchParams(window.location.search);
-const isAdmin = urlParams.has('admin');
+const isAdmin = urlParams.get('admin') === '1';
 
 if (isAdmin) {
   document.getElementById('welcomeBlock').style.display = 'none';
@@ -150,7 +148,8 @@ if (isAdmin) {
   const pwd = prompt("Введите пароль администратора:");
   if (pwd !== 'EverGreenAdmin123') {
     alert('Неверный пароль!');
-    window.location.href = window.location.pathname;
+    urlParams.delete('admin');
+    history.replaceState(null,'',window.location.pathname);
   } else {
     const adminDiv = document.getElementById('adminPanel');
     adminDiv.style.display = 'block';
@@ -160,116 +159,115 @@ if (isAdmin) {
     if (apps.length === 0) {
       tbody.innerHTML = '<tr><td colspan="6">Нет заявок</td></tr>';
     } else {
-      apps.forEach(a => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${a.id}</td><td>${a.minecraftNick}</td><td>${a.age}</td><td><a href="${a.youtubeLink}" target="_blank">Ссылка</a></td><td>${a.discordNick}</td><td>${a.timestamp}</td>`;
+      apps.forEach(a=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td>${a.id}</td><td>${a.minecraftNick}</td><td>${a.age}</td><td><a href="${a.youtubeLink}" target="_blank">Ссылка</a></td><td>${a.discordNick}</td><td>${a.timestamp}</td>`;
         tbody.appendChild(tr);
       });
     }
     
-    document.getElementById('clearAppsBtn').addEventListener('click', () => {
-      if (confirm('Удалить все заявки?')) {
+    document.getElementById('clearAppsBtn').addEventListener('click',()=>{
+      if(confirm('Удалить все заявки?')){
         localStorage.removeItem('evergreenApplications');
-        tbody.innerHTML = '<tr><td colspan="6">Нет заявок</td></tr>';
+        tbody.innerHTML='<tr><td colspan="6">Нет заявок</td></tr>';
         alert('Все заявки удалены');
       }
     });
   }
 } else {
-  // UI пользователя
-  const welcomeBlock = document.getElementById('welcomeBlock');
-  const formContainer = document.getElementById('formContainer');
-  const successMessage = document.getElementById('successMessage');
-  const startBtn = document.getElementById('startBtn');
-  const newApplicationBtn = document.getElementById('newApplicationBtn');
-  const steps = document.querySelectorAll('.form-step');
-  const progressBar = document.getElementById('progressBar');
-  const stepLabels = document.querySelectorAll('.progress-step');
-  const totalSteps = 4;
-  let currentStep = 1;
+  const welcomeBlock=document.getElementById('welcomeBlock');
+  const formContainer=document.getElementById('formContainer');
+  const successMessage=document.getElementById('successMessage');
+  const startBtn=document.getElementById('startBtn');
+  const newApplicationBtn=document.getElementById('newApplicationBtn');
+  const steps=document.querySelectorAll('.form-step');
+  const progressBar=document.getElementById('progressBar');
+  const stepLabels=document.querySelectorAll('.progress-step');
+  const totalSteps=4;
+  let currentStep=1;
 
-  function updateProgressBar() {
-    progressBar.style.width = ((currentStep - 1) / (totalSteps - 1) * 100) + '%';
-    stepLabels.forEach((l, i) => l.classList.toggle('active', i < currentStep));
+  function updateProgressBar(){
+    progressBar.style.width=((currentStep-1)/(totalSteps-1)*100)+'%';
+    stepLabels.forEach((l,i)=>l.classList.toggle('active',i<currentStep));
   }
 
-  function goNext() {
-    let valid = false;
-    switch (currentStep) {
+  function goNext(){
+    let valid=false;
+    switch(currentStep){
       case 1:
-        valid = document.getElementById('minecraftNick').value.trim() !== '';
-        if (!valid) { alert('Введите ник'); return; }
+        valid=document.getElementById('minecraftNick').value.trim()!=='';
+        if(!valid){alert('Введите ник'); return;}
         break;
       case 2:
-        const ageVal = parseInt(document.getElementById('age').value);
-        valid = !isNaN(ageVal) && ageVal >= 10 && ageVal <= 100;
-        if (!valid) { alert('Введите корректный возраст (10-100)'); return; }
+        const ageVal=parseInt(document.getElementById('age').value);
+        valid=!isNaN(ageVal)&&ageVal>=10&&ageVal<=100;
+        if(!valid){alert('Введите корректный возраст (10-100)'); return;}
         break;
       case 3:
-        const yt = document.getElementById('youtubeLink').value.trim();
-        valid = (yt !== '' && (yt.includes('youtube.com') || yt.includes('youtu.be')));
-        if (!valid) { alert('Введите корректную ссылку на YouTube'); return; }
+        const yt=document.getElementById('youtubeLink').value.trim();
+        valid=(yt!==''&&(yt.includes('youtube.com')||yt.includes('youtu.be')));
+        if(!valid){alert('Введите корректную ссылку на YouTube'); return;}
         break;
     }
-    if (currentStep < totalSteps) {
-      steps[currentStep - 1].classList.remove('active');
+    if(currentStep<totalSteps){
+      steps[currentStep-1].classList.remove('active');
       currentStep++;
-      steps[currentStep - 1].classList.add('active');
+      steps[currentStep-1].classList.add('active');
       updateProgressBar();
     }
   }
 
-  function goPrev() {
-    if (currentStep > 1) {
-      steps[currentStep - 1].classList.remove('active');
+  function goPrev(){
+    if(currentStep>1){
+      steps[currentStep-1].classList.remove('active');
       currentStep--;
-      steps[currentStep - 1].classList.add('active');
+      steps[currentStep-1].classList.add('active');
       updateProgressBar();
     }
   }
 
-  document.getElementById('applicationForm').addEventListener('submit', function(e) {
+  document.getElementById('applicationForm').addEventListener('submit',function(e){
     e.preventDefault();
-    const discord = document.getElementById('discordNick').value.trim();
-    if (discord === '') { alert('Введите ник Discord'); return; }
-    const data = {
-      id: Math.random().toString(36).substring(2, 8).toUpperCase(),
+    const discord=document.getElementById('discordNick').value.trim();
+    if(discord===''){alert('Введите ник Discord'); return;}
+    const data={
+      id: Math.random().toString(36).substring(2,8).toUpperCase(),
       minecraftNick: document.getElementById('minecraftNick').value.trim(),
       age: document.getElementById('age').value,
       youtubeLink: document.getElementById('youtubeLink').value.trim(),
       discordNick: discord,
       timestamp: new Date().toLocaleString()
     };
-    let apps = JSON.parse(localStorage.getItem('evergreenApplications') || '[]');
+    let apps=JSON.parse(localStorage.getItem('evergreenApplications')||'[]');
     apps.push(data);
-    localStorage.setItem('evergreenApplications', JSON.stringify(apps));
-    document.getElementById('applicationData').innerHTML = `<h3>Ваши данные:</h3><p><strong>Ник:</strong> ${data.minecraftNick}</p><p><strong>Возраст:</strong> ${data.age}</p><p><strong>YouTube:</strong> ${data.youtubeLink}</p><p><strong>Discord:</strong> ${data.discordNick}</p>`;
-    document.getElementById('applicationId').textContent = data.id;
-    formContainer.style.display = 'none';
-    successMessage.style.display = 'block';
+    localStorage.setItem('evergreenApplications',JSON.stringify(apps));
+    document.getElementById('applicationData').innerHTML=`<h3>Ваши данные:</h3><p><strong>Ник:</strong> ${data.minecraftNick}</p><p><strong>Возраст:</strong> ${data.age}</p><p><strong>YouTube:</strong> ${data.youtubeLink}</p><p><strong>Discord:</strong> ${data.discordNick}</p>`;
+    document.getElementById('applicationId').textContent=data.id;
+    formContainer.style.display='none';
+    successMessage.style.display='block';
   });
 
-  startBtn.addEventListener('click', () => {
-    welcomeBlock.style.display = 'none';
-    formContainer.style.display = 'block';
+  startBtn.addEventListener('click',()=>{
+    welcomeBlock.style.display='none';
+    formContainer.style.display='block';
   });
-  
-  newApplicationBtn.addEventListener('click', () => {
+
+  newApplicationBtn.addEventListener('click',()=>{
     document.getElementById('applicationForm').reset();
-    steps.forEach(s => s.classList.remove('active'));
+    steps.forEach(s=>s.classList.remove('active'));
     document.getElementById('step1').classList.add('active');
-    currentStep = 1;
+    currentStep=1;
     updateProgressBar();
-    successMessage.style.display = 'none';
-    formContainer.style.display = 'block';
+    successMessage.style.display='none';
+    formContainer.style.display='block';
   });
 
-  document.getElementById('nextBtn1').addEventListener('click', goNext);
-  document.getElementById('nextBtn2').addEventListener('click', goNext);
-  document.getElementById('nextBtn3').addEventListener('click', goNext);
-  document.getElementById('prevBtn2').addEventListener('click', goPrev);
-  document.getElementById('prevBtn3').addEventListener('click', goPrev);
-  document.getElementById('prevBtn4').addEventListener('click', goPrev);
+  document.getElementById('nextBtn1').addEventListener('click',goNext);
+  document.getElementById('nextBtn2').addEventListener('click',goNext);
+  document.getElementById('nextBtn3').addEventListener('click',goNext);
+  document.getElementById('prevBtn2').addEventListener('click',goPrev);
+  document.getElementById('prevBtn3').addEventListener('click',goPrev);
+  document.getElementById('prevBtn4').addEventListener('click',goPrev);
 }
 </script>
 </body>
