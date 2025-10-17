@@ -47,6 +47,7 @@ body{font-family:'Press Start 2P',cursive;background-color:var(--light-green);co
 .admin-table th{background-color:var(--lime);}
 .export-section{margin-top:20px;padding:15px;background-color:var(--gray);border-radius:8px;text-align:center;}
 .export-section h3{font-size:0.9rem;margin-bottom:15px;}
+.auto-save-notice{background-color:var(--lime);color:var(--black);padding:10px;border-radius:5px;margin:10px 0;font-size:0.6rem;text-align:center;}
 @media(max-width:768px){.container{padding:10px;}.welcome h1{font-size:1.4rem;}.welcome p{font-size:0.7rem;}.btn{font-size:0.7rem;padding:10px 20px;}.form-step h2{font-size:1rem;}.form-group label{font-size:0.6rem;}.form-group input{font-size:0.6rem;padding:10px;}.success-message h2{font-size:1.2rem;}.success-message p{font-size:0.7rem;}}
 @media(max-width:480px){.logo{width:120px;height:120px;}.welcome,.form-container,.success-message{padding:20px;}.welcome h1{font-size:1.1rem;}.form-step h2{font-size:0.9rem;}.progress-step{font-size:0.5rem;}.form-navigation{flex-direction:column;gap:10px;}.form-navigation .btn{width:100%;}}
 </style>
@@ -123,6 +124,9 @@ body{font-family:'Press Start 2P',cursive;background-color:var(--light-green);co
     <p>Спасибо за вашу заявку на сервер EverGreen. Мы свяжемся с вами в Discord.</p>
     <div class="application-data" id="applicationData"></div>
     <p>ID заявки: <strong id="applicationId"></strong></p>
+    <div class="auto-save-notice">
+      ✅ Файл applications.json автоматически скачан! Положите его в папку с ботом.
+    </div>
     <button class="btn" id="newApplicationBtn">Подать новую заявку</button>
   </div>
 
@@ -143,187 +147,203 @@ body{font-family:'Press Start 2P',cursive;background-color:var(--light-green);co
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  document.body.style.opacity = '1';
-});
-
-// Функция для экспорта заявок в JSON файл
-function exportApplications() {
-  const apps = JSON.parse(localStorage.getItem('evergreenApplications') || '[]');
-  const dataStr = JSON.stringify(apps, null, 2);
-  const blob = new Blob([dataStr], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'applications.json';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-  
-  alert(`✅ Экспортировано ${apps.length} заявок в файл applications.json`);
-}
-
-// Функция для очистки всех заявок
-function clearAllApplications() {
-  if (confirm('Вы уверены, что хотите удалить ВСЕ заявки? Это действие нельзя отменить!')) {
-    localStorage.removeItem('evergreenApplications');
-    updateAdminTable();
-    alert('Все заявки удалены!');
-  }
+// Функция для сохранения заявок в файл
+function saveApplicationsToFile() {
+    const apps = JSON.parse(localStorage.getItem('evergreenApplications') || '[]');
+    const dataStr = JSON.stringify(apps, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    
+    // Создаем ссылку для скачивания
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'applications.json';
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    console.log(`✅ Экспортировано ${apps.length} заявок в applications.json`);
+    return apps.length;
 }
 
 // Функция для обновления таблицы в админ-панели
 function updateAdminTable() {
-  const apps = JSON.parse(localStorage.getItem('evergreenApplications') || '[]');
-  const tbody = document.querySelector('#adminTable tbody');
-  
-  if (apps.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6">Нет заявок</td></tr>';
-  } else {
-    tbody.innerHTML = apps.map(app => `
-      <tr>
-        <td>${app.id}</td>
-        <td>${app.minecraftNick}</td>
-        <td>${app.age}</td>
-        <td><a href="${app.youtubeLink}" target="_blank">Ссылка</a></td>
-        <td>${app.discordNick}</td>
-        <td>${app.timestamp}</td>
-      </tr>
-    `).join('');
-  }
+    const apps = JSON.parse(localStorage.getItem('evergreenApplications') || '[]');
+    const tbody = document.querySelector('#adminTable tbody');
+    
+    if (apps.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6">Нет заявок</td></tr>';
+    } else {
+        tbody.innerHTML = apps.map(app => `
+            <tr>
+                <td>${app.id}</td>
+                <td>${app.minecraftNick}</td>
+                <td>${app.age}</td>
+                <td><a href="${app.youtubeLink}" target="_blank">Ссылка</a></td>
+                <td>${app.discordNick}</td>
+                <td>${app.timestamp}</td>
+            </tr>
+        `).join('');
+    }
 }
+
+// Функция для очистки всех заявок
+function clearAllApplications() {
+    if (confirm('Вы уверены, что хотите удалить ВСЕ заявки? Это действие нельзя отменить!')) {
+        localStorage.removeItem('evergreenApplications');
+        updateAdminTable();
+        alert('Все заявки удалены!');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.body.style.opacity = '1';
+});
 
 // Проверка админ-панели
 const urlParams = new URLSearchParams(window.location.search);
 const isAdmin = urlParams.get('admin') === '1';
 
 if (isAdmin) {
-  document.getElementById('welcomeBlock').style.display = 'none';
-  document.getElementById('formContainer').style.display = 'none';
-  document.getElementById('successMessage').style.display = 'none';
-  
-  const pwd = prompt("Введите пароль администратора:");
-  if (pwd !== 'EverGreenAdmin123') {
-    alert('Неверный пароль!');
-    const url = new URL(window.location.href);
-    url.searchParams.delete('admin');
-    history.replaceState(null, '', url.toString());
-    document.getElementById('welcomeBlock').style.display = 'block';
-  } else {
-    const adminDiv = document.getElementById('adminPanel');
-    adminDiv.style.display = 'block';
-    updateAdminTable();
+    document.getElementById('welcomeBlock').style.display = 'none';
+    document.getElementById('formContainer').style.display = 'none';
+    document.getElementById('successMessage').style.display = 'none';
     
-    // Добавляем обработчики для кнопок экспорта и очистки
-    document.getElementById('exportBtn').addEventListener('click', exportApplications);
-    document.getElementById('clearStorageBtn').addEventListener('click', clearAllApplications);
-  }
+    const pwd = prompt("Введите пароль администратора:");
+    if (pwd !== 'EverGreenAdmin123') {
+        alert('Неверный пароль!');
+        const url = new URL(window.location.href);
+        url.searchParams.delete('admin');
+        history.replaceState(null, '', url.toString());
+        document.getElementById('welcomeBlock').style.display = 'block';
+    } else {
+        const adminDiv = document.getElementById('adminPanel');
+        adminDiv.style.display = 'block';
+        updateAdminTable();
+        
+        // Добавляем обработчики для кнопок экспорта и очистки
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            const count = saveApplicationsToFile();
+            alert(`✅ Файл applications.json скачан! Заявок: ${count}\nПоложите файл в папку с ботом.`);
+        });
+        
+        document.getElementById('clearStorageBtn').addEventListener('click', clearAllApplications);
+    }
 } else {
-  // Пользовательский интерфейс
-  const welcomeBlock = document.getElementById('welcomeBlock');
-  const formContainer = document.getElementById('formContainer');
-  const successMessage = document.getElementById('successMessage');
-  const startBtn = document.getElementById('startBtn');
-  const newApplicationBtn = document.getElementById('newApplicationBtn');
-  const steps = document.querySelectorAll('.form-step');
-  const progressBar = document.getElementById('progressBar');
-  const stepLabels = document.querySelectorAll('.progress-step');
-  const totalSteps = 4;
-  let currentStep = 1;
+    // Пользовательский интерфейс
+    const welcomeBlock = document.getElementById('welcomeBlock');
+    const formContainer = document.getElementById('formContainer');
+    const successMessage = document.getElementById('successMessage');
+    const startBtn = document.getElementById('startBtn');
+    const newApplicationBtn = document.getElementById('newApplicationBtn');
+    const steps = document.querySelectorAll('.form-step');
+    const progressBar = document.getElementById('progressBar');
+    const stepLabels = document.querySelectorAll('.progress-step');
+    const totalSteps = 4;
+    let currentStep = 1;
 
-  function updateProgressBar() {
-    progressBar.style.width = ((currentStep - 1) / (totalSteps - 1) * 100) + '%';
-    stepLabels.forEach((l, i) => l.classList.toggle('active', i < currentStep));
-  }
-
-  function goNext() {
-    let valid = false;
-    switch (currentStep) {
-      case 1:
-        valid = document.getElementById('minecraftNick').value.trim() !== '';
-        if (!valid) { alert('Введите ник'); return; }
-        break;
-      case 2:
-        const ageVal = parseInt(document.getElementById('age').value);
-        valid = !isNaN(ageVal) && ageVal >= 10 && ageVal <= 100;
-        if (!valid) { alert('Введите корректный возраст (10-100)'); return; }
-        break;
-      case 3:
-        const yt = document.getElementById('youtubeLink').value.trim();
-        valid = (yt !== '' && (yt.includes('youtube.com') || yt.includes('youtu.be')));
-        if (!valid) { alert('Введите корректную ссылку на YouTube'); return; }
-        break;
+    function updateProgressBar() {
+        progressBar.style.width = ((currentStep - 1) / (totalSteps - 1) * 100) + '%';
+        stepLabels.forEach((l, i) => l.classList.toggle('active', i < currentStep));
     }
-    if (currentStep < totalSteps) {
-      steps[currentStep - 1].classList.remove('active');
-      currentStep++;
-      steps[currentStep - 1].classList.add('active');
-      updateProgressBar();
+
+    function goNext() {
+        let valid = false;
+        switch (currentStep) {
+            case 1:
+                valid = document.getElementById('minecraftNick').value.trim() !== '';
+                if (!valid) { alert('Введите ник'); return; }
+                break;
+            case 2:
+                const ageVal = parseInt(document.getElementById('age').value);
+                valid = !isNaN(ageVal) && ageVal >= 10 && ageVal <= 100;
+                if (!valid) { alert('Введите корректный возраст (10-100)'); return; }
+                break;
+            case 3:
+                const yt = document.getElementById('youtubeLink').value.trim();
+                valid = (yt !== '' && (yt.includes('youtube.com') || yt.includes('youtu.be')));
+                if (!valid) { alert('Введите корректную ссылку на YouTube'); return; }
+                break;
+        }
+        if (currentStep < totalSteps) {
+            steps[currentStep - 1].classList.remove('active');
+            currentStep++;
+            steps[currentStep - 1].classList.add('active');
+            updateProgressBar();
+        }
     }
-  }
 
-  function goPrev() {
-    if (currentStep > 1) {
-      steps[currentStep - 1].classList.remove('active');
-      currentStep--;
-      steps[currentStep - 1].classList.add('active');
-      updateProgressBar();
+    function goPrev() {
+        if (currentStep > 1) {
+            steps[currentStep - 1].classList.remove('active');
+            currentStep--;
+            steps[currentStep - 1].classList.add('active');
+            updateProgressBar();
+        }
     }
-  }
 
-  document.getElementById('applicationForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const discord = document.getElementById('discordNick').value.trim();
-    if (discord === '') { alert('Введите ник Discord'); return; }
-    
-    const data = {
-      id: Math.random().toString(36).substring(2, 8).toUpperCase(),
-      minecraftNick: document.getElementById('minecraftNick').value.trim(),
-      age: document.getElementById('age').value,
-      youtubeLink: document.getElementById('youtubeLink').value.trim(),
-      discordNick: discord,
-      timestamp: new Date().toLocaleString()
-    };
-    
-    let apps = JSON.parse(localStorage.getItem('evergreenApplications') || '[]');
-    apps.push(data);
-    localStorage.setItem('evergreenApplications', JSON.stringify(apps));
-    
-    document.getElementById('applicationData').innerHTML = `
-      <h3>Ваши данные:</h3>
-      <p><strong>Ник:</strong> ${data.minecraftNick}</p>
-      <p><strong>Возраст:</strong> ${data.age}</p>
-      <p><strong>YouTube:</strong> ${data.youtubeLink}</p>
-      <p><strong>Discord:</strong> ${data.discordNick}</p>
-    `;
-    document.getElementById('applicationId').textContent = data.id;
-    formContainer.style.display = 'none';
-    successMessage.style.display = 'block';
-  });
+    document.getElementById('applicationForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const discord = document.getElementById('discordNick').value.trim();
+        if (discord === '') { alert('Введите ник Discord'); return; }
+        
+        const data = {
+            id: Math.random().toString(36).substring(2, 8).toUpperCase(),
+            minecraftNick: document.getElementById('minecraftNick').value.trim(),
+            age: document.getElementById('age').value,
+            youtubeLink: document.getElementById('youtubeLink').value.trim(),
+            discordNick: discord,
+            timestamp: new Date().toLocaleString()
+        };
+        
+        // Сохраняем в localStorage
+        let apps = JSON.parse(localStorage.getItem('evergreenApplications') || '[]');
+        apps.push(data);
+        localStorage.setItem('evergreenApplications', JSON.stringify(apps));
+        
+        // ✅ АВТОМАТИЧЕСКИ СОХРАНЯЕМ В ФАЙЛ
+        saveApplicationsToFile();
+        
+        // Показываем данные заявки
+        document.getElementById('applicationData').innerHTML = `
+            <h3>Ваши данные:</h3>
+            <p><strong>Ник:</strong> ${data.minecraftNick}</p>
+            <p><strong>Возраст:</strong> ${data.age}</p>
+            <p><strong>YouTube:</strong> ${data.youtubeLink}</p>
+            <p><strong>Discord:</strong> ${data.discordNick}</p>
+        `;
+        document.getElementById('applicationId').textContent = data.id;
+        
+        // Переходим к сообщению об успехе
+        formContainer.style.display = 'none';
+        successMessage.style.display = 'block';
+    });
 
-  startBtn.addEventListener('click', function() {
-    welcomeBlock.style.display = 'none';
-    formContainer.style.display = 'block';
-  });
+    startBtn.addEventListener('click', function() {
+        welcomeBlock.style.display = 'none';
+        formContainer.style.display = 'block';
+    });
 
-  newApplicationBtn.addEventListener('click', function() {
-    document.getElementById('applicationForm').reset();
-    steps.forEach(s => s.classList.remove('active'));
-    document.getElementById('step1').classList.add('active');
-    currentStep = 1;
-    updateProgressBar();
-    successMessage.style.display = 'none';
-    formContainer.style.display = 'block';
-  });
+    newApplicationBtn.addEventListener('click', function() {
+        document.getElementById('applicationForm').reset();
+        steps.forEach(s => s.classList.remove('active'));
+        document.getElementById('step1').classList.add('active');
+        currentStep = 1;
+        updateProgressBar();
+        successMessage.style.display = 'none';
+        formContainer.style.display = 'block';
+    });
 
-  // Навигация шагов
-  document.getElementById('nextBtn1').addEventListener('click', goNext);
-  document.getElementById('nextBtn2').addEventListener('click', goNext);
-  document.getElementById('nextBtn3').addEventListener('click', goNext);
-  document.getElementById('prevBtn2').addEventListener('click', goPrev);
-  document.getElementById('prevBtn3').addEventListener('click', goPrev);
-  document.getElementById('prevBtn4').addEventListener('click', goPrev);
+    // Навигация шагов
+    document.getElementById('nextBtn1').addEventListener('click', goNext);
+    document.getElementById('nextBtn2').addEventListener('click', goNext);
+    document.getElementById('nextBtn3').addEventListener('click', goNext);
+    document.getElementById('prevBtn2').addEventListener('click', goPrev);
+    document.getElementById('prevBtn3').addEventListener('click', goPrev);
+    document.getElementById('prevBtn4').addEventListener('click', goPrev);
 }
 </script>
 </body>
