@@ -19,6 +19,7 @@ body{font-family:'Press Start 2P',cursive;background-color:var(--light-green);co
 .btn{display:inline-block;background-color:var(--lime);color:var(--black);padding:12px 25px;border:none;border-radius:8px;font-family:'Press Start 2P',cursive;font-size:0.8rem;cursor:pointer;transition:all 0.3s;text-decoration:none;box-shadow:0 4px 0 var(--dark-lime);}
 .btn:hover{transform:translateY(-3px);box-shadow:0 6px 0 var(--dark-lime);background-color:#90EE90;}
 .btn:active{transform:translateY(1px);box-shadow:0 2px 0 var(--dark-lime);}
+.btn:disabled{background-color:#ccc;box-shadow:0 4px 0 #999;cursor:not-allowed;transform:none;}
 .form-container{display:none;background-color:var(--white);color:var(--black);padding:30px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.1);border:3px solid var(--lime);margin-bottom:30px;}
 .form-step{display:none;animation:fadeIn 0.5s ease-in-out;}
 .form-step.active{display:block;}
@@ -44,7 +45,7 @@ body{font-family:'Press Start 2P',cursive;background-color:var(--light-green);co
 .admin-table{width:100%;border-collapse:collapse;margin:20px 0;table-layout:fixed;}
 .admin-table th,.admin-table td{border:1px solid #ccc;padding:8px;text-align:center;font-size:0.7rem;word-wrap: break-word;}
 .admin-table th{background-color:var(--lime);}
-@media(max-width:768px){.container{padding:10px;}.welcome h1{font-size:1.4rem;}.welcome p{font-size:0.7rem;}.btn{font-size:0.7rem;padding:10px 20px;}.form-step h2{font-size:1rem;}.form-group label{font-size:0.6rem;}.form-group input{font-size:0.6rem;padding:10px;}.success-message h2{font-size:1.2rem;}.success-message p{font-size:0.7rem;}}
+@media(max-width:768px){.container{padding:10px;}.welcome h1{font-size:1.4rem;}.welcome p{font-size:0.7rem;}.btn{font-size:0.7rem;padding:10px 20px;}.form-step h2{font-size:1rem;}.form-group label{font-size:0.6rem;}.form-group input{font-size:0.6rem;padding:10px;}.success-message h2{font-size:1.2rem;}.success-message p{font-size:0.7rem;} }
 @media(max-width:480px){.logo{width:120px;height:120px;}.welcome,.form-container,.success-message{padding:20px;}.welcome h1{font-size:1.1rem;}.form-step h2{font-size:0.9rem;}.progress-step{font-size:0.5rem;}.form-navigation{flex-direction:column;gap:10px;}.form-navigation .btn{width:100%;}}
 </style>
 </head>
@@ -118,7 +119,9 @@ body{font-family:'Press Start 2P',cursive;background-color:var(--light-green);co
   <div class="success-message" id="successMessage">
     <h2>Заявка отправлена!</h2>
     <p>Спасибо за вашу заявку на сервер EverGreen. Мы свяжемся с вами в Discord.</p>
+    <div class="application-data" id="applicationData"></div>
     <p>ID заявки: <strong id="applicationId"></strong></p>
+    <button class="btn" id="newApplicationBtn">Подать новую заявку</button>
   </div>
 
   <div class="admin-container" id="adminPanel">
@@ -133,12 +136,12 @@ body{font-family:'Press Start 2P',cursive;background-color:var(--light-green);co
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     document.body.style.opacity = '1';
-
     const webhookURL = 'https://discord.com/api/webhooks/1428774460600750202/hZ5r98HaXQyo50R7KBLPgcx7pmmLsl5gZMVNOy1gczkgB2TVL1YymUiB2DcSCwbgk1IN';
     const welcomeBlock = document.getElementById('welcomeBlock');
     const formContainer = document.getElementById('formContainer');
     const successMessage = document.getElementById('successMessage');
     const startBtn = document.getElementById('startBtn');
+    const newApplicationBtn = document.getElementById('newApplicationBtn');
     const steps = document.querySelectorAll('.form-step');
     const progressBar = document.getElementById('progressBar');
     const stepLabels = document.querySelectorAll('.progress-step');
@@ -152,42 +155,46 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function goNext() {
         let valid = false;
-        switch (currentStep) {
+        switch(currentStep){
             case 1:
                 valid = document.getElementById('minecraftNick').value.trim() !== '';
-                if (!valid) { alert('Введите ник'); return; }
+                if(!valid){ alert('Введите ник'); return; }
                 break;
             case 2:
                 const ageVal = parseInt(document.getElementById('age').value);
-                valid = !isNaN(ageVal) && ageVal >= 10 && ageVal <= 100;
-                if (!valid) { alert('Введите корректный возраст (10-100)'); return; }
+                valid = !isNaN(ageVal) && ageVal>=10 && ageVal<=100;
+                if(!valid){ alert('Введите корректный возраст (10-100)'); return; }
                 break;
             case 3:
                 const yt = document.getElementById('youtubeLink').value.trim();
-                valid = (yt !== '' && (yt.includes('youtube.com') || yt.includes('youtu.be')));
-                if (!valid) { alert('Введите корректную ссылку на YouTube'); return; }
+                valid = (yt!=='' && (yt.includes('youtube.com') || yt.includes('youtu.be')));
+                if(!valid){ alert('Введите корректную ссылку на YouTube'); return; }
                 break;
         }
-        if (currentStep < totalSteps) {
-            steps[currentStep - 1].classList.remove('active');
+        if(currentStep<totalSteps){
+            steps[currentStep-1].classList.remove('active');
             currentStep++;
-            steps[currentStep - 1].classList.add('active');
+            steps[currentStep-1].classList.add('active');
             updateProgressBar();
         }
     }
 
-    function goPrev() {
-        if (currentStep > 1) {
-            steps[currentStep - 1].classList.remove('active');
+    function goPrev(){
+        if(currentStep>1){
+            steps[currentStep-1].classList.remove('active');
             currentStep--;
-            steps[currentStep - 1].classList.add('active');
+            steps[currentStep-1].classList.add('active');
             updateProgressBar();
         }
     }
 
-    startBtn.addEventListener('click', function() {
-        welcomeBlock.style.display = 'none';
-        formContainer.style.display = 'block';
+    startBtn.addEventListener('click', function(){ welcomeBlock.style.display='none'; formContainer.style.display='block'; });
+    newApplicationBtn.addEventListener('click', function(){
+        document.getElementById('applicationForm').reset();
+        steps.forEach(s=>s.classList.remove('active'));
+        document.getElementById('step1').classList.add('active');
+        currentStep=1; updateProgressBar();
+        successMessage.style.display='none'; formContainer.style.display='block';
     });
 
     document.getElementById('nextBtn1').addEventListener('click', goNext);
@@ -197,31 +204,35 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('prevBtn3').addEventListener('click', goPrev);
     document.getElementById('prevBtn4').addEventListener('click', goPrev);
 
-    document.getElementById('applicationForm').addEventListener('submit', function(e) {
+    document.getElementById('applicationForm').addEventListener('submit', function(e){
         e.preventDefault();
         const data = {
-            id: Math.random().toString(36).substring(2, 8).toUpperCase(),
+            id: Math.random().toString(36).substring(2,8).toUpperCase(),
             minecraftNick: document.getElementById('minecraftNick').value.trim(),
             age: document.getElementById('age').value,
             youtubeLink: document.getElementById('youtubeLink').value.trim(),
             discordNick: document.getElementById('discordNick').value.trim(),
             timestamp: new Date().toLocaleString()
         };
-
-        // Отправка в Discord
-        fetch(webhookURL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                content: `Новая заявка на EverGreen:\nID: ${data.id}\nНик Minecraft: ${data.minecraftNick}\nВозраст: ${data.age}\nYouTube: ${data.youtubeLink}\nDiscord: ${data.discordNick}\nВремя: ${data.timestamp}`
-            })
-        }).then(() => console.log('Заявка отправлена в Discord!'))
-          .catch(err => console.error('Ошибка отправки в Discord:', err));
+        fetch(webhookURL,{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({content:`Новая заявка на EverGreen:\nID: ${data.id}\nНик Minecraft: ${data.minecraftNick}\nВозраст: ${data.age}\nYouTube: ${data.youtubeLink}\nDiscord: ${data.discordNick}\nВремя: ${data.timestamp}`})
+        }).then(()=>console.log('Заявка отправлена в Discord!')).catch(err=>console.error('Ошибка отправки в Discord:', err));
 
         document.getElementById('applicationId').textContent = data.id;
-        formContainer.style.display = 'none';
-        successMessage.style.display = 'block';
+        formContainer.style.display='none'; successMessage.style.display='block';
     });
+
+    // Админ-панель ?admin=1
+    const urlParams = new URLSearchParams(window.location.search);
+    const isAdmin = urlParams.get('admin')==='1';
+    if(isAdmin){
+        welcomeBlock.style.display='none'; formContainer.style.display='none'; successMessage.style.display='none';
+        const pwd = prompt("Введите пароль администратора:");
+        if(pwd!=='EverGreenAdmin123'){ alert('Неверный пароль!'); const url = new URL(window.location.href); url.searchParams.delete('admin'); history.replaceState(null,'',url.toString()); welcomeBlock.style.display='block'; }
+        else{ document.getElementById('adminPanel').style.display='block'; }
+    }
 });
 </script>
 </body>
