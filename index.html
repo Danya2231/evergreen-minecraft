@@ -1,52 +1,122 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>EverGreen Minecraft - Подать заявку</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--lime:#7CFC00;--dark-lime:#32CD32;--light-green:#f0f8f0;--white:#FFF;--black:#1A1A1A;--gray:#f5f5f5;}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Press Start 2P',cursive;background-color:var(--light-green);color:var(--black);min-height:100vh;opacity:0;transition:opacity 1s ease-in;}
-.container{max-width:800px;margin:0 auto;padding:20px;position:relative;z-index:1;}
-.logo-container{text-align:center;margin:20px 0 30px;}
-.logo{width:150px;height:150px;border-radius:50%;border:5px solid var(--lime);box-shadow:0 0 20px var(--lime);padding:10px;background-color:var(--white);transition:transform 0.3s,box-shadow 0.3s;}
-.logo:hover{transform:scale(1.05);box-shadow:0 0 30px var(--lime);}
-.welcome{background-color:var(--white);color:var(--black);padding:30px;border-radius:15px;text-align:center;margin-bottom:30px;box-shadow:0 5px 15px rgba(0,0,0,0.1);border:3px solid var(--lime);}
-.welcome h1{font-size:1.8rem;margin-bottom:20px;color:var(--black);}
-.welcome p{font-size:0.8rem;line-height:1.6;margin-bottom:25px;}
-.btn{display:inline-block;background-color:var(--lime);color:var(--black);padding:12px 25px;border:none;border-radius:8px;font-family:'Press Start 2P',cursive;font-size:0.8rem;cursor:pointer;transition:all 0.3s;text-decoration:none;box-shadow:0 4px 0 var(--dark-lime);}
-.btn:hover{transform:translateY(-3px);box-shadow:0 6px 0 var(--dark-lime);background-color:#90EE90;}
-.btn:active{transform:translateY(1px);box-shadow:0 2px 0 var(--dark-lime);}
-.btn:disabled{background-color:#ccc;box-shadow:0 4px 0 #999;cursor:not-allowed;transform:none;}
-.form-container{display:none;background-color:var(--white);color:var(--black);padding:30px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.1);border:3px solid var(--lime);margin-bottom:30px;}
-.form-step{display:none;animation:fadeIn 0.5s ease-in-out;}
-.form-step.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-.form-step h2{font-size:1.2rem;margin-bottom:20px;color:var(--black);text-align:center;}
-.form-group{margin-bottom:20px;}
-.form-group label{display:block;margin-bottom:10px;font-size:0.7rem;}
-.form-group input{width:100%;padding:12px;border:2px solid #ddd;border-radius:8px;font-family:'Press Start 2P',cursive;font-size:0.7rem;background-color:var(--gray);}
-.form-group input:focus{outline:none;border-color:var(--lime);box-shadow:0 0 5px var(--lime);}
-.form-navigation{display:flex;justify-content:space-between;margin-top:30px;}
-.progress-container{margin:30px 0;}
-.progress-bar{height:10px;background-color:#ddd;border-radius:5px;overflow:hidden;}
-.progress{height:100%;background-color:var(--lime);width:0%;transition:width 0.5s ease-in-out;}
-.progress-steps{display:flex;justify-content:space-between;margin-top:10px;}
-.progress-step{font-size:0.6rem;color:#999;}
-.progress-step.active{color:var(--lime);}
-.success-message{display:none;background-color:var(--white);color:var(--black);padding:40px 30px;border-radius:15px;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,0.1);border:3px solid var(--lime);margin-bottom:30px;}
-.success-message h2{font-size:1.5rem;margin-bottom:20px;color:var(--black);}
-.success-message p{font-size:0.8rem;line-height:1.6;margin-bottom:25px;}
-.application-data{background-color:var(--gray);padding:15px;border-radius:8px;margin:20px 0;text-align:left;font-size:0.7rem;}
-.application-data h3{text-align:center;margin-bottom:10px;}
-.admin-container{display:none;background-color:var(--white);padding:20px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.1);border:3px solid var(--lime);}
-.admin-table{width:100%;border-collapse:collapse;}
-.admin-table th,.admin-table td{border:1px solid #ccc;padding:8px;text-align:center;font-size:0.7rem;}
-.admin-table th{background-color:var(--lime);}
-@media(max-width:768px){.container{padding:10px;}.welcome h1{font-size:1.4rem;}.welcome p{font-size:0.7rem;}.btn{font-size:0.7rem;padding:10px 20px;}.form-step h2{font-size:1rem;}.form-group label{font-size:0.6rem;}.form-group input{font-size:0.6rem;padding:10px;}.success-message h2{font-size:1.2rem;}.success-message p{font-size:0.7rem;}}
-@media(max-width:480px){.logo{width:120px;height:120px;}.welcome,.form-container,.success-message{padding:20px;}.welcome h1{font-size:1.1rem;}.form-step h2{font-size:0.9rem;}.progress-step{font-size:0.5rem;}.form-navigation{flex-direction:column;gap:10px;}.form-navigation .btn{width:100%;}}
+:root{
+  --primary:#10B981; --primary-dark:#059669; --primary-light:#D1FAE5;
+  --white:#FFFFFF; --black:#1F2937; --gray-light:#F9FAFB; --gray:#E5E7EB;
+  --gray-dark:#6B7280; --red:#EF4444;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Inter',sans-serif;
+  background:linear-gradient(135deg,#F0FDF4 0%,#ECFDF5 100%);
+  color:var(--black); min-height:100vh; opacity:0; transition:opacity .8s ease-in;
+}
+.container{max-width:1000px;margin:0 auto;padding:20px;position:relative;z-index:1}
+.logo-container{text-align:center;margin:20px 0 40px}
+.logo{width:120px;height:120px;border-radius:50%;border:4px solid var(--primary);
+  box-shadow:0 8px 25px rgba(16,185,129,.3);padding:8px;background-color:var(--white);
+  transition:all .3s ease}
+.logo:hover{transform:scale(1.05);box-shadow:0 12px 35px rgba(16,185,129,.4)}
+.welcome{background-color:var(--white);color:var(--black);padding:40px;border-radius:20px;
+  text-align:center;margin-bottom:30px;box-shadow:0 10px 25px rgba(0,0,0,.08);
+  border:2px solid var(--primary-light);position:relative;overflow:hidden}
+.welcome::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--primary),var(--primary-dark))}
+.welcome h1{font-size:2.2rem;margin-bottom:20px;color:var(--black);font-weight:700;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.welcome p{font-size:1.1rem;line-height:1.7;margin-bottom:30px;color:var(--gray-dark);font-weight:400}
+.btn{display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:var(--white);padding:14px 32px;border:none;border-radius:12px;font-family:'Inter',sans-serif;
+  font-size:1rem;font-weight:600;cursor:pointer;transition:all .3s ease;text-decoration:none;
+  box-shadow:0 4px 15px rgba(16,185,129,.3);gap:8px}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(16,185,129,.4);background:linear-gradient(135deg,var(--primary-dark),#047857)}
+.btn:active{transform:translateY(0);box-shadow:0 4px 15px rgba(16,185,129,.3)}
+.btn-secondary{background:var(--white);color:var(--black);border:2px solid var(--gray);box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.btn-secondary:hover{background:var(--gray-light);border-color:var(--gray-dark);box-shadow:0 4px 15px rgba(0,0,0,.1)}
+.btn-danger{background:linear-gradient(135deg,var(--red),#DC2626);box-shadow:0 4px 15px rgba(239,68,68,.3)}
+.btn-danger:hover{background:linear-gradient(135deg,#DC2626,#B91C1C);box-shadow:0 8px 25px rgba(239,68,68,.4)}
+
+.form-container{display:none;background-color:var(--white);color:var(--black);
+  padding:40px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,.08);border:2px solid var(--primary-light);
+  margin-bottom:30px;position:relative;overflow:hidden}
+.form-container::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--primary),var(--primary-dark))}
+.form-step{display:none;animation:fadeIn .5s ease-in-out}
+.form-step.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.form-step h2{font-size:1.5rem;margin-bottom:30px;color:var(--black);text-align:center;font-weight:600}
+.form-group{margin-bottom:25px}
+.form-group label{display:block;margin-bottom:10px;font-size:.95rem;font-weight:500;color:var(--black)}
+.form-group input{width:100%;padding:14px 16px;border:2px solid var(--gray);border-radius:12px;
+  font-family:'Inter',sans-serif;font-size:1rem;background-color:var(--white);transition:all .3s ease}
+.form-group input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(16,185,129,.1);background-color:var(--white)}
+.form-navigation{display:flex;justify-content:space-between;align-items:center;margin-top:40px;gap:15px}
+.form-navigation .btn{min-width:120px}
+.progress-container{margin:30px 0 40px}
+.progress-bar{height:8px;background-color:var(--gray);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.progress{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary-dark));width:0%;transition:width .5s ease-in-out;border-radius:10px}
+.progress-steps{display:flex;justify-content:space-between;margin-top:15px}
+.progress-step{font-size:.85rem;color:var(--gray-dark);font-weight:500;text-align:center;flex:1;position:relative}
+.progress-step::before{content:'';position:absolute;top:-25px;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;
+  background:var(--gray);border:3px solid var(--white);z-index:2;transition:all .3s ease}
+.progress-step.active::before{background:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
+.progress-step.active{color:var(--primary);font-weight:600}
+
+.success-message{display:none;background-color:var(--white);color:var(--black);padding:50px 40px;border-radius:20px;text-align:center;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);border:2px solid var(--primary-light);margin-bottom:30px;position:relative;overflow:hidden}
+.success-message::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--primary-dark))}
+.success-message h2{font-size:1.8rem;margin-bottom:20px;color:var(--black);font-weight:700}
+.success-message p{font-size:1.1rem;line-height:1.7;margin-bottom:30px;color:var(--gray-dark)}
+
+.application-data{background-color:var(--gray-light);padding:25px;border-radius:12px;margin:25px 0;text-align:left;font-size:.95rem;border-left:4px solid var(--primary)}
+.application-data h3{text-align:center;margin-bottom:15px;color:var(--black);font-weight:600}
+.application-data p{margin:8px 0;color:var(--gray-dark)}
+.application-data strong{color:var(--black);font-weight:600}
+
+/* Админ-панель */
+.admin-container{display:none;background-color:var(--white);padding:30px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,.08);
+  border:2px solid var(--primary-light);margin-bottom:30px;position:relative;overflow:hidden}
+.admin-container::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--primary-dark))}
+.admin-container h2{font-size:1.8rem;margin-bottom:25px;color:var(--black);font-weight:700;text-align:center}
+.admin-table-container{overflow-x:auto;margin:25px 0;border-radius:12px;border:1px solid var(--gray)}
+.admin-table{width:100%;border-collapse:collapse;min-width:800px;background:var(--white)}
+.admin-table th{background:linear-gradient(135deg,var(--primary-light),#A7F3D0);color:var(--black);font-weight:600;padding:16px 12px;text-align:left;border-bottom:2px solid var(--primary);font-size:.9rem}
+.admin-table td{padding:14px 12px;border-bottom:1px solid var(--gray);font-size:.9rem;color:var(--black)}
+.admin-table tbody tr{transition:background-color .2s ease}
+.admin-table tbody tr:hover{background-color:var(--primary-light)}
+.admin-table tbody tr:last-child td{border-bottom:none}
+.admin-actions{display:flex;justify-content:center;gap:15px;margin-top:25px;flex-wrap:wrap}
+.no-applications{text-align:center;padding:40px;color:var(--gray-dark);font-size:1.1rem}
+.youtube-link{color:var(--primary);text-decoration:none;font-weight:500;transition:color .2s ease}
+.youtube-link:hover{color:var(--primary-dark);text-decoration:underline}
+
+@media (max-width:768px){
+  .container{padding:15px}
+  .welcome,.form-container,.success-message,.admin-container{padding:30px 25px}
+  .welcome h1{font-size:1.8rem}
+  .welcome p,.success-message p{font-size:1rem}
+  .btn{padding:12px 24px;font-size:.95rem}
+  .form-step h2{font-size:1.3rem}
+  .progress-step{font-size:.75rem}
+  .form-navigation{flex-direction:column}
+  .form-navigation .btn{width:100%}
+  .admin-table th,.admin-table td{padding:12px 8px;font-size:.8rem}
+}
+@media (max-width:480px){
+  .logo{width:100px;height:100px}
+  .welcome,.form-container,.success-message{padding:25px 20px}
+  .welcome h1{font-size:1.5rem}
+  .form-step h2{font-size:1.2rem}
+  .progress-step{font-size:.7rem}
+  .admin-container h2{font-size:1.5rem}
+}
 </style>
 </head>
 <body>
@@ -55,170 +125,436 @@ body{font-family:'Press Start 2P',cursive;background-color:var(--light-green);co
     <img src="https://i.ibb.co/TqYqtF1h/logo.png" class="logo" alt="EverGreen">
   </div>
 
-  <div class="welcome" id="welcomeBlock">
-    <h1>Добро пожаловать на EverGreen!</h1>
-    <p>Присоединяйтесь к нашему приватному Minecraft серверу. Чтобы стать частью сообщества, заполните заявку ниже.</p>
-    <button class="btn" id="startBtn">Подать заявку</button>
+  <div class="welcome" id="welcomeBlock" aria-hidden="false">
+    <h1 id="welcomeTitle">Добро пожаловать на EverGreen!</h1>
+    <p id="welcomeDesc">Присоединяйтесь к нашему приватному Minecraft серверу. Чтобы стать частью сообщества, заполните заявку ниже.</p>
+    <button class="btn" id="startBtn" aria-controls="formContainer" tabindex="0">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M12 5v14m-7-7h14"/>
+      </svg>
+      Подать заявку
+    </button>
   </div>
 
-  <div class="form-container" id="formContainer">
+  <div class="form-container" id="formContainer" aria-hidden="true">
     <div class="progress-container">
-      <div class="progress-bar"><div class="progress" id="progressBar"></div></div>
+      <div class="progress-bar"><div class="progress" id="progressBar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div></div>
       <div class="progress-steps">
-        <div class="progress-step active">Ник</div>
+        <div class="progress-step active">Никнейм</div>
         <div class="progress-step">Возраст</div>
         <div class="progress-step">YouTube</div>
         <div class="progress-step">Discord</div>
       </div>
     </div>
-    <form id="applicationForm">
+
+    <form id="applicationForm" novalidate>
       <div class="form-step active" id="step1">
         <h2>Какой у вас ник в Minecraft?</h2>
         <div class="form-group">
-          <label>Введите ваш ник:</label>
-          <input type="text" id="minecraftNick" required>
+          <label for="minecraftNick">Введите ваш никнейм:</label>
+          <input type="text" id="minecraftNick" required placeholder="Например: Steve42" minlength="3" aria-required="true" />
         </div>
-        <div class="form-navigation"><div></div><button type="button" class="btn" id="nextBtn1">Далее</button></div>
+        <div class="form-navigation">
+          <div></div>
+          <button type="button" class="btn" id="nextBtn1">Далее
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M5 12h14m-7-7l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
       </div>
-      <div class="form-step" id="step2">
+
+      <div class="form-step" id="step2" aria-hidden="true">
         <h2>Сколько вам лет?</h2>
         <div class="form-group">
-          <label>Возраст:</label>
-          <input type="number" id="age" min="10" max="100" required>
+          <label for="age">Ваш возраст:</label>
+          <input type="number" id="age" min="10" max="100" required placeholder="От 10 до 100" aria-required="true" />
         </div>
         <div class="form-navigation">
-          <button type="button" class="btn" id="prevBtn2">Назад</button>
-          <button type="button" class="btn" id="nextBtn2">Далее</button>
+          <button type="button" class="btn btn-secondary" id="prevBtn2">Назад
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M19 12H5m7 7l-7-7 7-7"/>
+            </svg>
+          </button>
+          <button type="button" class="btn" id="nextBtn2">Далее
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M5 12h14m-7-7l7 7-7 7"/>
+            </svg>
+          </button>
         </div>
       </div>
-      <div class="form-step" id="step3">
+
+      <div class="form-step" id="step3" aria-hidden="true">
         <h2>Ссылка на YouTube-видео</h2>
         <div class="form-group">
-          <label>Вставьте ссылку:</label>
-          <input type="url" id="youtubeLink" required>
+          <label for="youtubeLink">Вставьте ссылку на ваше видео:</label>
+          <input type="url" id="youtubeLink" required placeholder="https://www.youtube.com/watch?v=..." aria-required="true" />
         </div>
         <div class="form-navigation">
-          <button type="button" class="btn" id="prevBtn3">Назад</button>
-          <button type="button" class="btn" id="nextBtn3">Далее</button>
+          <button type="button" class="btn btn-secondary" id="prevBtn3">Назад
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M19 12H5m7 7l-7-7 7-7"/>
+            </svg>
+          </button>
+          <button type="button" class="btn" id="nextBtn3">Далее
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M5 12h14m-7-7l7 7-7 7"/>
+            </svg>
+          </button>
         </div>
       </div>
-      <div class="form-step" id="step4">
+
+      <div class="form-step" id="step4" aria-hidden="true">
         <h2>Ваш ник в Discord</h2>
         <div class="form-group">
-          <label>Discord ник:</label>
-          <input type="text" id="discordNick" placeholder="User#1234" required>
+          <label for="discordNick">Discord никнейм:</label>
+          <input type="text" id="discordNick" placeholder="User#1234" required aria-required="true" />
         </div>
         <div class="form-navigation">
-          <button type="button" class="btn" id="prevBtn4">Назад</button>
-          <button type="submit" class="btn">Отправить</button>
+          <button type="button" class="btn btn-secondary" id="prevBtn4">Назад
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M19 12H5m7 7l-7-7 7-7"/>
+            </svg>
+          </button>
+          <button type="submit" class="btn" id="submitBtn">Отправить заявку
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M20 6L9 17l-5-5"/>
+            </svg>
+          </button>
         </div>
       </div>
     </form>
   </div>
 
-  <div class="success-message" id="successMessage">
-    <h2>Заявка отправлена!</h2>
-    <p>Спасибо за вашу заявку на сервер EverGreen. Мы свяжемся с вами в Discord.</p>
+  <div class="success-message" id="successMessage" aria-hidden="true">
+    <h2>Заявка успешно отправлена!</h2>
+    <p>Спасибо за вашу заявку на сервер EverGreen. Мы рассмотрим её в ближайшее время и свяжемся с вами в Discord.</p>
     <div class="application-data" id="applicationData"></div>
     <p>ID заявки: <strong id="applicationId"></strong></p>
-    <button class="btn" id="newApplicationBtn">Подать новую заявку</button>
+    <button class="btn" id="newApplicationBtn">Подать новую заявку
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M12 5v14m-7-7h14"/>
+      </svg>
+    </button>
   </div>
 
-  <div class="admin-container" id="adminPanel">
-    <h2>Админ-панель EverGreen</h2>
-    <table class="admin-table" id="adminTable">
-      <thead><tr><th>ID</th><th>Ник</th><th>Возраст</th><th>YouTube</th><th>Discord</th><th>Дата</th></tr></thead>
-      <tbody></tbody>
-    </table>
-    <button class="btn" id="clearAppsBtn">Очистить все заявки</button>
+  <div class="admin-container" id="adminPanel" aria-hidden="true">
+    <h2>Панель администратора EverGreen</h2>
+    <div class="admin-table-container">
+      <table class="admin-table" id="adminTable" aria-describedby="adminTableDesc">
+        <thead>
+          <tr>
+            <th>ID заявки</th>
+            <th>Никнейм</th>
+            <th>Возраст</th>
+            <th>YouTube</th>
+            <th>Discord</th>
+            <th>Дата подачи</th>
+          </tr>
+        </thead>
+        <tbody id="adminTableBody">
+        </tbody>
+      </table>
+    </div>
+    <div class="admin-actions">
+      <button class="btn btn-danger" id="clearAppsBtn">Очистить все заявки</button>
+      <button class="btn btn-secondary" id="refreshAppsBtn">Обновить</button>
+    </div>
   </div>
 </div>
 
 <script>
-// Fade-in
-document.addEventListener('DOMContentLoaded',()=>{document.body.style.opacity='1';});
+/* ========== КОНФИГУРАЦИЯ ========== */
+const CONFIG = {
+  ADMIN_PASSWORD: "EverGreenAdmin123",
+  WELCOME_TITLE: "Добро пожаловать на EverGreen!",
+  WELCOME_DESCRIPTION: "Присоединяйтесь к нашему приватному Minecraft серверу. Чтобы стать частью сообщества, заполните заявку ниже.",
+  SERVER_NAME: "EverGreen"
+};
 
-// Элементы
-const welcomeBlock=document.getElementById('welcomeBlock');
-const formContainer=document.getElementById('formContainer');
-const successMessage=document.getElementById('successMessage');
-const startBtn=document.getElementById('startBtn');
-const newApplicationBtn=document.getElementById('newApplicationBtn');
-const steps=document.querySelectorAll('.form-step');
-const progressBar=document.getElementById('progressBar');
-const stepLabels=document.querySelectorAll('.progress-step');
-const totalSteps=4;
-let currentStep=1;
+/* ===== Весь код выполняется после загрузки DOM ===== */
+document.addEventListener('DOMContentLoaded', () => {
+  // Fade-in
+  document.body.style.opacity = '1';
+  document.getElementById('welcomeTitle').textContent = CONFIG.WELCOME_TITLE;
+  document.getElementById('welcomeDesc').textContent = CONFIG.WELCOME_DESCRIPTION;
 
-// Навигация
-function updateProgressBar(){
-  progressBar.style.width=((currentStep-1)/(totalSteps-1)*100)+'%';
-  stepLabels.forEach((l,i)=>l.classList.toggle('active',i<currentStep));
-}
-function goNext(){
-  let valid=false;
-  switch(currentStep){
-    case 1: valid=document.getElementById('minecraftNick').value.trim()!==''; if(!valid){alert('Введите ник'); return;} break;
-    case 2: const ageVal=parseInt(document.getElementById('age').value); valid=!isNaN(ageVal)&&ageVal>=10&&ageVal<=100; if(!valid){alert('Введите корректный возраст'); return;} break;
-    case 3: const yt=document.getElementById('youtubeLink').value.trim(); valid=(yt!==''&&(yt.includes('youtube.com')||yt.includes('youtu.be'))); if(!valid){alert('Введите корректную ссылку'); return;} break;
+  // Элементы
+  const urlParams = new URLSearchParams(window.location.search);
+  const isAdmin = urlParams.has('admin');
+
+  const welcomeBlock = document.getElementById('welcomeBlock');
+  const formContainer = document.getElementById('formContainer');
+  const successMessage = document.getElementById('successMessage');
+  const startBtn = document.getElementById('startBtn');
+  const newApplicationBtn = document.getElementById('newApplicationBtn');
+  const steps = Array.from(document.querySelectorAll('.form-step'));
+  const progressBar = document.getElementById('progressBar');
+  const stepLabels = Array.from(document.querySelectorAll('.progress-step'));
+  const totalSteps = steps.length;
+  let currentStep = 1;
+
+  // Безопасная работа с localStorage
+  function safeGetApps(){
+    try {
+      const raw = localStorage.getItem('evergreenApplications') || '[]';
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return [];
+      return parsed;
+    } catch(e){
+      console.error('Ошибка чтения evergreenApplications:', e);
+      return [];
+    }
   }
-  if(currentStep<totalSteps){steps[currentStep-1].classList.remove('active'); currentStep++; steps[currentStep-1].classList.add('active'); updateProgressBar();}
-}
-function goPrev(){if(currentStep>1){steps[currentStep-1].classList.remove('active'); currentStep--; steps[currentStep-1].classList.add('active'); updateProgressBar();}}
+  function safeSetApps(arr){
+    try { localStorage.setItem('evergreenApplications', JSON.stringify(arr)); }
+    catch(e){ console.error('Ошибка записи evergreenApplications:', e); }
+  }
 
-// Отправка формы
-document.getElementById('applicationForm').addEventListener('submit',function(e){
-  e.preventDefault();
-  const discord=document.getElementById('discordNick').value.trim();
-  if(discord===''||!discord.includes('#')){alert('Введите корректный Discord'); return;}
-  const data={
-    id:'EG-'+Date.now()+'-'+Math.floor(Math.random()*1000),
-    minecraftNick:document.getElementById('minecraftNick').value.trim(),
-    age:document.getElementById('age').value,
-    youtubeLink:document.getElementById('youtubeLink').value.trim(),
-    discordNick:discord,
-    timestamp:new Date().toLocaleString()
-  };
-  let apps=JSON.parse(localStorage.getItem('evergreenApplications')||'[]'); apps.push(data); localStorage.setItem('evergreenApplications',JSON.stringify(apps));
-  document.getElementById('applicationData').innerHTML=`<h3>Ваши данные:</h3><p><strong>Ник:</strong>${data.minecraftNick}</p><p><strong>Возраст:</strong>${data.age}</p><p><strong>YouTube:</strong>${data.youtubeLink}</p><p><strong>Discord:</strong>${data.discordNick}</p>`;
-  document.getElementById('applicationId').textContent=data.id;
-  formContainer.style.display='none'; successMessage.style.display='block';
-});
+  // Обновление прогресса (визуально + aria)
+  function updateProgressBar(){
+    const pct = ((currentStep - 1) / (totalSteps - 1)) * 100;
+    progressBar.style.width = pct + '%';
+    progressBar.setAttribute('aria-valuenow', String(Math.round(pct)));
+    // Активируем label'ы до текущего шага (включая текущий)
+    stepLabels.forEach((el, i) => {
+      const makeActive = (i <= currentStep - 1);
+      el.classList.toggle('active', makeActive);
+    });
+  }
 
-// Кнопки
-startBtn.addEventListener('click',()=>{welcomeBlock.style.display='none'; formContainer.style.display='block';});
-newApplicationBtn.addEventListener('click',()=>{document.getElementById('applicationForm').reset(); steps.forEach(s=>s.classList.remove('active')); document.getElementById('step1').classList.add('active'); currentStep=1; updateProgressBar(); successMessage.style.display='none'; formContainer.style.display='block';});
+  // Показываем шаг (обновление классов и aria)
+  function showStep(index){
+    steps.forEach((s, i) => {
+      const isActive = i === index;
+      s.classList.toggle('active', isActive);
+      s.setAttribute('aria-hidden', String(!isActive));
+    });
+    currentStep = index + 1;
+    updateProgressBar();
+  }
 
-// Навигация шагов
-document.getElementById('nextBtn1').addEventListener('click',goNext);
-document.getElementById('nextBtn2').addEventListener('click',goNext);
-document.getElementById('nextBtn3').addEventListener('click',goNext);
-document.getElementById('prevBtn2').addEventListener('click',goPrev);
-document.getElementById('prevBtn3').addEventListener('click',goPrev);
-document.getElementById('prevBtn4').addEventListener('click',goPrev);
+  // Навигация шагов с валидацией
+  function validateStep(idx){
+    // Возвращает { valid: bool, message: string }
+    if (idx === 0){
+      const nick = document.getElementById('minecraftNick').value.trim();
+      if (!nick) return {valid:false, message:'Введите ваш никнейм в Minecraft'};
+      if (nick.length < 3) return {valid:false, message:'Никнейм должен содержать минимум 3 символа'};
+      return {valid:true};
+    }
+    if (idx === 1){
+      const ageVal = parseInt(document.getElementById('age').value, 10);
+      if (isNaN(ageVal) || ageVal < 10 || ageVal > 100) return {valid:false, message:'Введите корректный возраст (от 10 до 100 лет)'};
+      return {valid:true};
+    }
+    if (idx === 2){
+      const yt = document.getElementById('youtubeLink').value.trim();
+      if (!yt) return {valid:false, message:'Введите ссылку на YouTube видео'};
+      // Простая, но более надёжная проверка url
+      try {
+        const u = new URL(yt);
+        if (!/youtube\.com|youtu\.be/i.test(u.hostname)) return {valid:false, message:'Введите корректную ссылку на YouTube (youtube.com или youtu.be)'};
+      } catch(e){
+        return {valid:false, message:'Введите корректную ссылку на YouTube'};
+      }
+      return {valid:true};
+    }
+    return {valid:true};
+  }
 
-// --- Админ-панель через ?admin=1 ---
-if(window.location.search.includes('admin')){
-  const pwd=prompt("Введите пароль администратора:");
-  if(pwd!=='EverGreenAdmin123'){alert('Неверный пароль!'); window.location.href='/';}
-  else{
-    document.getElementById('welcomeBlock').style.display='none';
-    document.getElementById('formContainer').style.display='none';
-    document.getElementById('successMessage').style.display='none';
-    const adminDiv=document.getElementById('adminPanel');
-    adminDiv.style.display='block';
-    const tbody=adminDiv.querySelector('tbody');
-    const apps=JSON.parse(localStorage.getItem('evergreenApplications')||'[]');
-    apps.forEach(a=>{
-      const tr=document.createElement('tr');
-      tr.innerHTML=`<td>${a.id}</td><td>${a.minecraftNick}</td><td>${a.age}</td><td>${a.youtubeLink}</td><td>${a.discordNick}</td><td>${a.timestamp}</td>`;
+  function goNext(){
+    const idx = currentStep - 1;
+    const check = validateStep(idx);
+    if (!check.valid){
+      alert(check.message);
+      return;
+    }
+    if (currentStep < totalSteps){
+      showStep(idx + 1);
+      // Смещение фокуса на первое поле следующего шага для UX
+      const nextInput = steps[idx + 1].querySelector('input');
+      if (nextInput) nextInput.focus();
+    }
+  }
+
+  function goPrev(){
+    if (currentStep > 1){
+      showStep(currentStep - 2);
+    } else {
+      // возвращаем на приветственный экран (если нужно)
+      formContainer.style.display = 'none';
+      welcomeBlock.style.display = 'block';
+      welcomeBlock.setAttribute('aria-hidden', 'false');
+      formContainer.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  // Загрузка таблицы админа
+  function loadApplicationsTable(){
+    const tbody = document.getElementById('adminTableBody');
+    const apps = safeGetApps();
+    if (!tbody) return;
+    if (apps.length === 0){
+      tbody.innerHTML = '<tr><td colspan="6" class="no-applications">Нет заявок</td></tr>';
+      return;
+    }
+    tbody.innerHTML = '';
+    apps.forEach(a => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${escapeHtml(String(a.id))}</td>
+        <td>${escapeHtml(String(a.minecraftNick))}</td>
+        <td>${escapeHtml(String(a.age))}</td>
+        <td><a href="${escapeAttr(a.youtubeLink)}" target="_blank" rel="noopener noreferrer" class="youtube-link">Смотреть</a></td>
+        <td>${escapeHtml(String(a.discordNick))}</td>
+        <td>${escapeHtml(String(a.timestamp))}</td>
+      `;
       tbody.appendChild(tr);
     });
-    document.getElementById('clearAppsBtn').addEventListener('click',()=>{
-      if(confirm('Удалить все заявки?')){localStorage.removeItem('evergreenApplications'); tbody.innerHTML=''; alert('Все заявки удалены');}
-    });
   }
-}
+
+  // Простые функции экранирования для вывода
+  function escapeHtml(s){
+    return s.replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+  function escapeAttr(s){
+    // Убираем пробелы и запрещённые символы в href (минимально)
+    try {
+      const u = new URL(s);
+      return u.href;
+    } catch {
+      return '#';
+    }
+  }
+
+  /* ===== Админ-режим или обычный интерфейс ===== */
+  if (isAdmin){
+    // Скрываем пользовательские интерфейсы
+    welcomeBlock.style.display = 'none';
+    formContainer.style.display = 'none';
+    successMessage.style.display = 'none';
+    // Запрос пароля администратора
+    const pwd = prompt('Введите пароль администратора:');
+    if (pwd !== CONFIG.ADMIN_PASSWORD){
+      alert('Неверный пароль!');
+      // Убираем параметр admin из URL
+      window.location.href = window.location.pathname;
+      return;
+    }
+    // Показываем админ-панель
+    const adminDiv = document.getElementById('adminPanel');
+    adminDiv.style.display = 'block';
+    adminDiv.setAttribute('aria-hidden', 'false');
+    loadApplicationsTable();
+    document.getElementById('clearAppsBtn').addEventListener('click', () => {
+      if (confirm('Вы уверены, что хотите удалить ВСЕ заявки? Это действие нельзя отменить.')){
+        safeSetApps([]);
+        loadApplicationsTable();
+        alert('Все заявки удалены');
+      }
+    });
+    document.getElementById('refreshAppsBtn').addEventListener('click', loadApplicationsTable);
+    // Больше фич можно добавить (фильтры, удаление по id и т.д.)
+    return; // админ-логика закончена
+  }
+
+  // Обычный пользовательский интерфейс
+  // Инициализация прогресс-бара и шагов
+  showStep(0); // показываем первый шаг и обновляем прогресс
+
+  // Кнопки перехода
+  document.getElementById('nextBtn1').addEventListener('click', goNext);
+  document.getElementById('nextBtn2').addEventListener('click', goNext);
+  document.getElementById('nextBtn3').addEventListener('click', goNext);
+  document.getElementById('prevBtn2').addEventListener('click', goPrev);
+  document.getElementById('prevBtn3').addEventListener('click', goPrev);
+  document.getElementById('prevBtn4').addEventListener('click', goPrev);
+
+  // Кнопка "Подать заявку" (на приветственном экране)
+  startBtn.addEventListener('click', () => {
+    welcomeBlock.style.display = 'none';
+    welcomeBlock.setAttribute('aria-hidden', 'true');
+    formContainer.style.display = 'block';
+    formContainer.setAttribute('aria-hidden', 'false');
+    // устанавливаем фокус на первое поле
+    const first = document.getElementById('minecraftNick');
+    if (first) first.focus();
+  });
+
+  // Новая заявка (с экрана успеха)
+  newApplicationBtn.addEventListener('click', () => {
+    const form = document.getElementById('applicationForm');
+    form.reset();
+    showStep(0);
+    successMessage.style.display = 'none';
+    successMessage.setAttribute('aria-hidden', 'true');
+    formContainer.style.display = 'block';
+    formContainer.setAttribute('aria-hidden', 'false');
+    const first = document.getElementById('minecraftNick');
+    if (first) first.focus();
+    // Включаем кнопку отправки, если была отключена
+    document.getElementById('submitBtn').disabled = false;
+  });
+
+  // Отправка формы
+  document.getElementById('applicationForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const discord = document.getElementById('discordNick').value.trim();
+    // Discord формат: User#1234 (username#digits от 1 до 6 цифр)
+    if (!/^.+#[0-9]{1,6}$/.test(discord)){
+      alert('Введите корректный Discord никнейм (формат: User#1234)');
+      return;
+    }
+
+    // Финальная проверка всех шагов перед отправкой
+    for (let i = 0; i < totalSteps - 1; i++){
+      const v = validateStep(i);
+      if (!v.valid){
+        alert('Ошибка в шагах формы: ' + v.message);
+        showStep(i);
+        return;
+      }
+    }
+
+    const data = {
+      id: 'EG-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+      minecraftNick: document.getElementById('minecraftNick').value.trim(),
+      age: document.getElementById('age').value,
+      youtubeLink: document.getElementById('youtubeLink').value.trim(),
+      discordNick: discord,
+      timestamp: new Date().toLocaleString('ru-RU')
+    };
+
+    // Сохраняем в локальное хранилище
+    const apps = safeGetApps();
+    apps.push(data);
+    safeSetApps(apps);
+
+    // Показываем данные заявки — экранируем вывод
+    document.getElementById('applicationData').innerHTML = `
+      <h3>Данные вашей заявки</h3>
+      <p><strong>Никнейм Minecraft:</strong> ${escapeHtml(data.minecraftNick)}</p>
+      <p><strong>Возраст:</strong> ${escapeHtml(String(data.age))} лет</p>
+      <p><strong>YouTube видео:</strong> <a href="${escapeAttr(data.youtubeLink)}" target="_blank" rel="noopener noreferrer" class="youtube-link">${escapeHtml(data.youtubeLink)}</a></p>
+      <p><strong>Discord:</strong> ${escapeHtml(data.discordNick)}</p>
+    `;
+
+    document.getElementById('applicationId').textContent = data.id;
+
+    // Показываем экран успеха
+    formContainer.style.display = 'none';
+    formContainer.setAttribute('aria-hidden', 'true');
+    successMessage.style.display = 'block';
+    successMessage.setAttribute('aria-hidden', 'false');
+
+    // Предотвращаем двойную отправку
+    document.getElementById('submitBtn').disabled = true;
+  });
+
+  // Инициализация полей (если нужно автозаполнить или восстановить)
+  // ничего не делаем — форма пустая по умолчанию
+});
 </script>
 </body>
 </html>
