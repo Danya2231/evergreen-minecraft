@@ -19,7 +19,6 @@ body{font-family:'Press Start 2P',cursive;background-color:var(--light-green);co
 .btn{display:inline-block;background-color:var(--lime);color:var(--black);padding:12px 25px;border:none;border-radius:8px;font-family:'Press Start 2P',cursive;font-size:0.8rem;cursor:pointer;transition:all 0.3s;text-decoration:none;box-shadow:0 4px 0 var(--dark-lime);}
 .btn:hover{transform:translateY(-3px);box-shadow:0 6px 0 var(--dark-lime);background-color:#90EE90;}
 .btn:active{transform:translateY(1px);box-shadow:0 2px 0 var(--dark-lime);}
-.btn:disabled{background-color:#ccc;box-shadow:0 4px 0 #999;cursor:not-allowed;transform:none;}
 .form-container{display:none;background-color:var(--white);color:var(--black);padding:30px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.1);border:3px solid var(--lime);margin-bottom:30px;}
 .form-step{display:none;animation:fadeIn 0.5s ease-in-out;}
 .form-step.active{display:block;}
@@ -41,6 +40,10 @@ body{font-family:'Press Start 2P',cursive;background-color:var(--light-green);co
 .success-message p{font-size:0.8rem;line-height:1.6;margin-bottom:25px;}
 .application-data{background-color:var(--gray);padding:15px;border-radius:8px;margin:20px 0;text-align:left;font-size:0.7rem;word-wrap: break-word;}
 .application-data h3{text-align:center;margin-bottom:10px;}
+.admin-container{display:none;background-color:var(--white);padding:20px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.1);border:3px solid var(--lime);overflow-x:auto;}
+.admin-table{width:100%;border-collapse:collapse;margin:20px 0;table-layout:fixed;}
+.admin-table th,.admin-table td{border:1px solid #ccc;padding:8px;text-align:center;font-size:0.7rem;word-wrap: break-word;}
+.admin-table th{background-color:var(--lime);}
 @media(max-width:768px){.container{padding:10px;}.welcome h1{font-size:1.4rem;}.welcome p{font-size:0.7rem;}.btn{font-size:0.7rem;padding:10px 20px;}.form-step h2{font-size:1rem;}.form-group label{font-size:0.6rem;}.form-group input{font-size:0.6rem;padding:10px;}.success-message h2{font-size:1.2rem;}.success-message p{font-size:0.7rem;}}
 @media(max-width:480px){.logo{width:120px;height:120px;}.welcome,.form-container,.success-message{padding:20px;}.welcome h1{font-size:1.1rem;}.form-step h2{font-size:0.9rem;}.progress-step{font-size:0.5rem;}.form-navigation{flex-direction:column;gap:10px;}.form-navigation .btn{width:100%;}}
 </style>
@@ -116,6 +119,14 @@ body{font-family:'Press Start 2P',cursive;background-color:var(--light-green);co
     <h2>Заявка отправлена!</h2>
     <p>Спасибо за вашу заявку на сервер EverGreen. Мы свяжемся с вами в Discord.</p>
     <p>ID заявки: <strong id="applicationId"></strong></p>
+  </div>
+
+  <div class="admin-container" id="adminPanel">
+    <h2>Админ-панель EverGreen</h2>
+    <table class="admin-table" id="adminTable">
+      <thead><tr><th>ID</th><th>Ник</th><th>Возраст</th><th>YouTube</th><th>Discord</th><th>Дата</th></tr></thead>
+      <tbody></tbody>
+    </table>
   </div>
 </div>
 
